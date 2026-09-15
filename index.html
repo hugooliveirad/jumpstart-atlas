@@ -163,6 +163,10 @@ body.modal-open{overflow:hidden}.shelf.dragging,.card-shelf.dragging{cursor:grab
   .dialog-backdrop{align-items:flex-start;padding-block:8dvh}
   .dialog{max-height:calc(100dvh - 16dvh);overflow-y:auto}
 }
+@media print {
+  .dialog-backdrop{padding:0;padding-block:0}
+  .dialog{max-height:none;overflow:visible}
+}
 </style>
 </head>
 <body>
