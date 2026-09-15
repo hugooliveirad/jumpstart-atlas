@@ -44,6 +44,8 @@ Key `jumpstart-atlas.collection.v1` (see `APP_SCHEMA`). Shape:
 
 Matching is by English card name. Card-detail “Matched J25 printings” are Scryfall J25 printings of that name, not per-set owned copies. Do not store printings in `inventory` without a schema bump and a backup migration.
 
+Variant matches on My Collection default to exclusive leftover copies: each unallocated copy finances at most one listed match, with complete packs claiming first. A session toggle restores shared-pool scoring, where complete candidates may share cards. Confirmed packs still reserve first.
+
 Layout preferences use `jumpstart-atlas.preferences.v1`.
 
 ## Pairing and copy
