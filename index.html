@@ -583,12 +583,13 @@ function parseSearch(query) {
   for(let raw of tokens){
     let not=false;if(raw.startsWith('-')){not=true;raw=raw.slice(1);}
     if(!raw)continue;
-    if(/^(OR|AND)$/i.test(raw)){terms.push({field:'or',op:':',value:raw.toLowerCase(),not:false});continue;}
+    if(/^(OR|AND)$/i.test(raw)){errors.push('OR/AND grouping needs Scryfall. The local matcher will not pretend this query is an OR.');continue;}
     const match=raw.match(/^([a-z]+)(:|<=|>=|=|<|>)(.*)$/i);
     if(!match){terms.push({field:'text',op:':',value:normalizeName(raw.replace(/^"|"$/g,'')),not});continue;}
     let [,field,op,value]=match;field=field.toLowerCase();const rawValue=value.replace(/^"|"$/g,'');value=normalizeName(rawValue);
     field=({o:'oracle',fo:'oracle',t:'type',r:'rarity',c:'color',id:'identity',cmc:'mv',manavalue:'mv',n:'name',m:'mana',kw:'keyword',a:'artist',ft:'flavor',e:'set',edition:'set',f:'format',pow:'power',tou:'toughness',loy:'loyalty'})[field]||field;
     if(!value){errors.push(`Add a value after ${field}${op}`);continue;}
+    if(['format','game','usd','eur','tix','banned','restricted'].includes(field)){errors.push(`Local matcher cannot evaluate ${field}:. Needs Scryfall.`);continue;}
     terms.push({field,op,value,rawValue,not});
   }
   return {terms,errors};
@@ -620,9 +621,8 @@ function cardMatches(card, parsed, inventory, index, filters={}) {
       case 'artist':ok=!!card.metadata&&normalizeName(card.artist).includes(value);break;
       case 'flavor':ok=!!card.metadata&&normalizeName(card.flavor).includes(value);break;
       case 'keyword':ok=!!card.metadata&&(card.keywords||[]).some(k=>normalizeName(k).includes(value));break;
-      case 'format':ok=true;break;
-      case 'or':ok=true;break;
       case 'is':ok=value==='owned'?inventory[card.key]>0:['missing','unowned'].includes(value)?!(inventory[card.key]>0):value==='land'?card.isLand:value==='basic'?card.isBasic:value==='nonland'?!card.isLand:!!card.metadata&&((card.keywords||[]).some(k=>normalizeName(k)===value)||normalizeName(card.type).includes(value));break;
+      default:ok=false;break;
     }
     if(not?ok:!ok)return false;
   }
