@@ -67,7 +67,11 @@ preference overrides it. Mobile pack and play-deck dialogs use the full viewport
 
 BREAD summaries below pack and play-deck totals count card copies in the full
 list, independent of filters. Each assigned BREAD role counts, so a card with
-multiple roles contributes to each total. Zero counts remain visible.
+multiple roles contributes to each total. Zero counts remain visible. Alongside
+BREAD, a compact nonland mana curve counts copies at mana values 1, 2, 3, 4,
+and 5+ (all values 5 and above). It uses the shared `deckAnalysis` calculation
+and the full list, independently of filters. Zero-mana copies and missing mana
+data are reported separately; an unavailable curve shows dashes, not zeroes.
 
 At widths 320–600 CSS pixels, card grids and theme grids use two equal columns
 with shrinking tracks rather than a fixed minimum. Horizontal shelves retain
@@ -127,6 +131,10 @@ play-deck dialogs. `dealSample` expands both full catalog lists (including basic
 lands and repeated copies), shuffles all 40 cards with Fisher–Yates, and takes seven
 cards plus the next three draws without replacement. Samples and their history
 exist only in the dialog; filtering or ownership never changes the sampled deck.
+The opening hand displays nonlands in ascending mana value (name breaks ties;
+unknown values come last) and groups lands by name into compact stacks with
+copy counts. This is display-only: stored samples and the next three draws keep
+their original order. Every distinct card remains available to inspect.
 
 Pack and play-deck dialogs offer View tokens. Related token/emblem IDs come from
 Scryfall `all_parts` for the cards in the full deck, independent of card filters.
@@ -209,6 +217,10 @@ positions after reload, filter constraints, identical halves, sample quantities
 and history, saved recipes, token retry/cache/deduplication, and overflow at 1280,
 412, and 320 CSS pixels. Also verify images and token relationships once with live
 Scryfall data before publishing related changes.
+
+`tests/hand-layout.cjs` checks land stacking, mana ordering, sample preservation,
+full-list pack and combined-deck curves, unknown metadata, mobile widths, RTL,
+and 200% CSS zoom. Use `ATLAS_BROWSER=firefox` for a second browser.
 
 `tests/interface.cjs` covers keyboard drawer and popover behavior, filter focus,
 persisted display settings, empty searches, version tabs, CSV preview/apply/undo,

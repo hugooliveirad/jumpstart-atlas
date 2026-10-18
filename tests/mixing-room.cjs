@@ -82,14 +82,14 @@ async function until(fn) { for (let i = 0; i < 100; i++) { if (await fn()) retur
       assert.equal(await page.locator('.pair-grid .pair-card').count(), 1, 'Identical halves require both copies in results');
       const beforeStorage = await page.evaluate(() => localStorage.getItem('jumpstart-atlas.collection.v1'));
       await action('test-hands', page.locator('.mix-builder')).click();
-      const sampleKeys = () => page.locator('[data-sample-key]').evaluateAll(els => els.map(el => el.dataset.sampleKey));
+      const sampleKeys = () => page.locator('[data-sample-key]').evaluateAll(els => els.flatMap(el => Array(Number(el.dataset.sampleQuantity || 1)).fill(el.dataset.sampleKey)));
       const first = await sampleKeys();
       const counts = {};
       for (const c of catalog.decks.find(d => d.id === 'legion-1').cards) counts[c.name.toLowerCase()] = c.quantity * 2;
       const observed = new Set();
       for (let i = 0; i < 12; i++) {
         const sample = await sampleKeys(); assert.equal(sample.length, 10);
-        assert.equal(await page.locator('[aria-label="Opening hand"] [data-sample-key]').count(), 7);
+        assert.equal(await page.locator('[aria-label="Opening hand"] [data-sample-key]').evaluateAll(els => els.reduce((sum, el) => sum + Number(el.dataset.sampleQuantity), 0)), 7);
         assert.equal(await page.locator('[aria-label="Next three draws"] [data-sample-key]').count(), 3);
         const used = {}; for (const name of sample) { observed.add(name); used[name] = (used[name] || 0) + 1; assert(used[name] <= counts[name], 'Draws cannot exceed available copies'); }
         await action('deal-hand').click();

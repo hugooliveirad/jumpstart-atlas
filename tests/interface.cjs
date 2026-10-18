@@ -150,7 +150,7 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
       await page.locator('#saved-notes').fill('Saved while checking compact menus.');
       await page.locator('#save-deck-form').evaluate(form => form.requestSubmit());
       await go('saved'); await page.getByText('Interface regression mix', { exact: true }).waitFor();
-      await click(action('test-hands').first()); assert.equal(await page.locator('[data-sample-key]').count(), 10); await page.keyboard.press('Escape');
+      await click(action('test-hands').first()); assert.equal(await page.locator('[data-sample-key]').evaluateAll(els => els.reduce((sum, el) => sum + Number(el.dataset.sampleQuantity), 0)), 10); await page.keyboard.press('Escape');
       await click(action('load-saved').first()); await page.getByRole('dialog').waitFor(); await checkWidth('saved dialog'); await page.keyboard.press('Escape');
       await menu(); await action('settings').click();
       const restore = page.getByRole('button', { name: 'Restore backup', exact: true }); await restore.focus();
