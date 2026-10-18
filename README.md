@@ -15,7 +15,9 @@ You can:
 - Browse 46 themes and 121 pack versions, with Common / Rare / Mythic marks
 - Filter themes by color, ownership, and catalog tags
 - Import a CSV (including Mythic Tools-style exports) and confirm exact pack versions
-- Mix two halves, rank combinations by shared-tag synergy, and save 40-card recipes
+- Mix two halves, shuffle either pack or the whole mix, and save 40-card recipes
+- Sample opening hands and the next three draws for any mix, with previous samples to compare
+- View related tokens and emblems from pack and play-deck dialogs
 - Copy Scryfall decklists (quantity, name, set, collector number) from pack, card, and pairing lists
 - Open card details for J25 printings, Scryfall, and [LigaMagic](https://www.ligamagic.com.br/) links
 

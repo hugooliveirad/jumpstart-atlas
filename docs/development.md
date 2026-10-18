@@ -56,8 +56,9 @@ clears its draft selections. Filter panels start collapsed, keep their open stat
 per context during the session, and show an active-filter count when closed.
 Ownership and land controls live in those panels alongside the draft roles.
 
-Card images carry only the assigned BREAD letters; cards with only additional
-roles do not receive an invented BREAD rating. “Role details” toggles full text
+Card names have their assigned BREAD letters beside them; artwork stays clear.
+Cards with only additional roles do not receive an invented BREAD rating. Owned
+and unowned cards use green and muted dots, with accessible labels and tooltips. “Role details” toggles full text
 labels across lists, off by default. This preference is stored as
 `showDraftDetails` in the existing layout-preferences object. Card-detail dialogs
 always explain the roles. Pack cards default to a grid unless a saved layout
@@ -89,7 +90,29 @@ Layout preferences use `jumpstart-atlas.preferences.v1`.
 
 ## Pairing and copy
 
-`pairTitle` is `Name vN + Name vN`. Synergy score is shared tags plus a small color bonus; saved recipes are highlighted. Choosing a mixing-room half filters `PAIRS` to combinations that include every selected pack.
+`pairTitle` is `Name vN + Name vN`. Synergy score is shared tags plus a small color bonus; saved recipes are highlighted. Choosing a mixing-room half filters `PAIRS` to combinations that include every selected pack, including multiplicity for identical halves.
+
+Mixing-room slots retain their positions when one is removed. Empty positions are
+`null` in session state and empty fields in the `packs` URL parameter. They are
+never saved as recipes. `completePair` guards actions requiring two actual packs.
+Surprise me ignores the selected halves, respects the pairing filters, and excludes
+the current unordered recipe. Each slot's Shuffle keeps the other half and chooses
+a different eligible variant. If filters leave no alternative, the mix stays intact
+and a message explains why.
+
+Test opening hands is available from the builder, pairing cards, saved mixes, and
+play-deck dialogs. `dealSample` expands both full catalog lists (including basic
+lands and repeated copies), shuffles all 40 cards with Fisher–Yates, and takes seven
+cards plus the next three draws without replacement. Samples and their history
+exist only in the dialog; filtering or ownership never changes the sampled deck.
+
+Pack and play-deck dialogs offer View tokens. Related token/emblem IDs come from
+Scryfall `all_parts` for the cards in the full deck, independent of card filters.
+Token details use the existing request queue and IndexedDB cache (`token:<id>`,
+seven-day freshness with stale fallback offline). They are not added to the card
+catalog or inventory. The viewer deduplicates by token Oracle ID and lists source
+cards. Missing metadata, request failures, and a verified empty token list have
+separate states. Copy effects can produce tokens without a listed token card.
 
 `scryfallLine` / `scryfallList` / `deckText` produce `quantity Name (SET) number` lists. Copy buttons call `copyText`. `downloadText` remains for JSON backup, CSV import template, import issues, and unreadable-recovery dumps.
 
@@ -102,7 +125,7 @@ Layout preferences use `jumpstart-atlas.preferences.v1`.
 
 ## Checks
 
-There is no test runner. After JS edits:
+There is no build step. After JS edits:
 
 ```bash
 python3 -c "from pathlib import Path; t=Path('index.html').read_text(); s=t[t.find('<script>')+8:t.rfind('</script>')]; Path('/tmp/atlas.js').write_text(s)"
@@ -110,3 +133,21 @@ node --check /tmp/atlas.js
 ```
 
 Then click a pack (dialog), a card (printings + LigaMagic), the mixing room (synergy rail + half filter), and a Copy list button.
+
+The mixing-room browser regression checks use Playwright and a local HTTP server.
+Install the test dependency outside the repository, then run:
+
+```bash
+npm install --prefix /tmp/jumpstart-atlas-tests --no-save playwright
+/tmp/jumpstart-atlas-tests/node_modules/.bin/playwright install chromium
+# With python3 -m http.server running in another terminal:
+NODE_PATH=/tmp/jumpstart-atlas-tests/node_modules node tests/mixing-room.cjs
+```
+
+`ATLAS_URL` can override the default `http://127.0.0.1:8000/`. The script uses
+isolated browser contexts and mocked Scryfall responses; it never edits an existing
+browser's collection. It checks shuffle/removal, both empty-slot actions, slot
+positions after reload, filter constraints, identical halves, sample quantities
+and history, saved recipes, token retry/cache/deduplication, and overflow at 1280,
+412, and 320 CSS pixels. Also verify images and token relationships once with live
+Scryfall data before publishing related changes.
