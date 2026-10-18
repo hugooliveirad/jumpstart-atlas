@@ -16,19 +16,41 @@ const grouped=JSON.parse(JSON.stringify(groups(['fixture','fixture'])));
 assert.deepEqual(grouped.map(g=>g.label),['0','1','2','3','4','5+','unknown']);
 assert.deepEqual(grouped.filter(g=>g.cards.length).map(g=>g.cards[0].quantity),[4,2,2]);
 const allCopies=page=>page.locator('[data-curve-key]').evaluateAll(els=>Object.fromEntries(els.map(el=>[el.dataset.curveKey,Number(el.dataset.curveQuantity)])));
+async function assertSummaryGeometry(page){
+ const geometry=await page.locator('.deck-profile').evaluate(profile=>{
+  const rect=el=>{const {x,y,width,height}=el.getBoundingClientRect();return {x,y,width,height};};
+  const spark=profile.querySelector('.compact-curve'),pip=profile.closest('.page-summary').querySelector('.rarity-pip');
+  return {spark:rect(spark),trigger:rect(profile.querySelector('.curve-trigger')),bars:[...spark.children].map(el=>({...rect(el),expectedHeight:el.classList.contains('unknown')?8:Number(el.dataset.count)===0?2:parseFloat(el.style.getPropertyValue('--bar-height'))})),pip:pip&&rect(pip),icon:pip&&rect(pip.querySelector('svg'))};
+ });
+ const {spark,trigger,bars,pip,icon}=geometry;
+ const centered=(a,b)=>{assert(Math.abs(a.x+a.width/2-b.x-b.width/2)<.6,'Horizontally centered');assert(Math.abs(a.y+a.height/2-b.y-b.height/2)<.6,'Vertically centered');};
+ centered(spark,trigger);if(pip)centered(icon,pip);
+ assert.equal(bars.length,5);
+ bars.forEach((bar,i)=>{
+  assert(Math.abs(bar.width-6)<.6,'Every mana bucket remains a separate narrow bar');
+  assert(Math.abs(bar.height-bar.expectedHeight)<.6,'Bar height reflects counts, zero or unknown state');
+  assert(bar.x>=spark.x-.5&&bar.x+bar.width<=spark.x+spark.width+.5&&bar.y>=spark.y-.5&&bar.y+bar.height<=spark.y+spark.height+.5,'Individual bars stay inside the sparkline');
+  if(i)assert(bar.x>=bars[i-1].x+bars[i-1].width+2.5,'Bars remain separated');
+ });
+}
 (async()=>{
  const browser=await (process.env.ATLAS_BROWSER==='firefox'?firefox:chromium).launch();
  try{
-  for(const width of [1280,412,320]){
+  for(const width of [1280,412,393,320]){
    const context=await browser.newContext({viewport:{width,height:920}}),page=await context.newPage(),errors=[];
    page.on('pageerror',e=>errors.push(e.message));
    await page.route('https://**/*',route=>route.request().url().startsWith('https://api.scryfall.com/cards/search')?route.fulfill({json:{object:'list',data:fixtures,has_more:false}}):route.abort());
-   await page.goto(origin+'#explore?pack=legion-1');
+   await page.goto(origin+'#explore?pack=chaos-1');
+   await page.waitForFunction(()=>document.querySelector('.curve-trigger')&&!document.querySelector('.curve-trigger').getAttribute('aria-label').includes('unknown'));
+   assert(await page.locator('.curve-fill[data-count="0"]').count()>0,'Chaos exercises the empty-bucket regression');
+   await assertSummaryGeometry(page);
+   await page.goto(origin+'#explore?pack=legion-1');await page.reload();
    await page.waitForFunction(()=>document.querySelector('.curve-trigger')&&!document.querySelector('.curve-trigger').getAttribute('aria-label').includes('unknown'));
    const before=await page.evaluate(()=>localStorage.getItem('jumpstart-atlas.collection.v1'));
    const spark=page.locator('.compact-curve'),trigger=page.locator('.curve-trigger');
    assert.equal((await spark.innerText()).trim(),'','Mini curve has no visible labels');
    assert((await spark.boundingBox()).height<=16);assert((await trigger.boundingBox()).height>=44);
+   await assertSummaryGeometry(page);
    await trigger.focus();await page.keyboard.press('Enter');await page.locator('.curve-dialog').waitFor();
    assert.deepEqual(await allCopies(page),expected);
    for(const el of await page.locator('[data-curve-key]').all()){
@@ -49,14 +71,14 @@ const allCopies=page=>page.locator('[data-curve-key]').evaluateAll(els=>Object.f
    await page.keyboard.press('Escape');assert.equal(await page.locator('.pack-dialog').count(),1);assert.equal(await page.evaluate(()=>document.activeElement.dataset.action),'mana-curve','Back returns focus to the tiny curve');
    // Full list, despite hidden owned-only results.
    await page.locator('#trigger-popover-pack-filters').click();await page.locator('#pack-card-filter').selectOption('owned');await page.keyboard.press('Escape');await trigger.click();assert.deepEqual(await allCopies(page),expected);await page.keyboard.press('Escape');
-   await page.goto(origin+'#pairings?packs=legion-1,legion-1');await page.reload();await page.locator('#trigger-popover-mix-more').click();await page.locator('.mix-builder [data-action=open-play-deck]').click();await trigger.click();
+   await page.goto(origin+'#pairings?packs=legion-1,legion-1');await page.reload();await page.locator('#trigger-popover-mix-more').click();await page.locator('.mix-builder [data-action=open-play-deck]').click();await assertSummaryGeometry(page);await trigger.click();
    assert.deepEqual(await allCopies(page),Object.fromEntries(Object.entries(expected).map(([key,q])=>[key,q*2])));
    await fit();await page.evaluate(()=>document.documentElement.dir='rtl');await fit();
    assert.equal(await page.evaluate(()=>localStorage.getItem('jumpstart-atlas.collection.v1')),before);assert.deepEqual(errors,[]);
    await context.close();console.log(`PASS ${width}px: text-height bars, 44px trigger, columns/quantities, overlapped-card taps, keyboard, modal focus/scroll, full lists, identical halves, RTL`);
   }
   const context=await browser.newContext({viewport:{width:320,height:920}}),page=await context.newPage();await page.route('https://**/*',route=>route.abort());
-  await page.goto(origin+'#explore?pack=legion-1');await page.locator('.curve-trigger').click();
+  await page.goto(origin+'#explore?pack=legion-1');await page.locator('.curve-trigger').waitFor();await assertSummaryGeometry(page);await page.locator('.curve-trigger').click();
   assert.equal(await page.locator('[data-curve-column]').count(),1,'Offline opens directly to Unknown');assert.equal(await page.locator('[data-curve-column=unknown] [data-curve-key]').count(),Object.keys(expected).length);assert.deepEqual(await allCopies(page),expected);assert.match(await page.locator('.curve-data-note').innerText(),/unavailable/);await context.close();console.log('PASS offline: unknown mana retains every nonland copy');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
