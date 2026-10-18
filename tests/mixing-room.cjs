@@ -90,14 +90,14 @@ async function until(fn) { for (let i = 0; i < 100; i++) { if (await fn()) retur
       for (let i = 0; i < 12; i++) {
         const sample = await sampleKeys(); assert.equal(sample.length, 10);
         assert.equal(await page.locator('[aria-label="Opening hand"] [data-sample-key]').evaluateAll(els => els.reduce((sum, el) => sum + Number(el.dataset.sampleQuantity), 0)), 7);
-        assert.equal(await page.locator('[aria-label="Next three draws"] [data-sample-key]').count(), 3);
+        assert.equal(await page.locator('[aria-label="Upcoming draws"] [data-sample-key]').count(), 3);
         const used = {}; for (const name of sample) { observed.add(name); used[name] = (used[name] || 0) + 1; assert(used[name] <= counts[name], 'Draws cannot exceed available copies'); }
         await action('deal-hand').click();
       }
       assert(observed.has('plains'), 'Lands are included even when card list filters hide them');
       await checkWidth();
       const latest = await sampleKeys();
-      await page.locator('[data-sample-key] [data-action=card]').first().click(); await page.getByRole('button', { name: 'Back', exact: true }).click(); assert.deepEqual(await sampleKeys(), latest, 'Card details preserve the sample');
+      await page.locator('.hand-board [data-action=hand-card]').first().click({position:{x:15,y:70}}); await page.locator('.hand-board [data-action=hand-card]').first().click(); await page.getByRole('button', { name: 'Back', exact: true }).click(); assert.deepEqual(await sampleKeys(), latest, 'Card details preserve the sample');
       for (let i = 0; i < 12; i++) await page.getByRole('button', { name: 'Previous sample' }).click();
       assert.deepEqual(await sampleKeys(), first); assert(await page.getByRole('button', { name: 'Previous sample' }).isDisabled());
       await action('close-modal').last().click();

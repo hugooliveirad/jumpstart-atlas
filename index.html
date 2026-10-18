@@ -258,11 +258,11 @@ body.modal-open{overflow:hidden}.shelf.dragging,.card-shelf.dragging{cursor:grab
 .deck-profile{display:flex;align-items:center;gap:12px;max-width:100%}.deck-profile .bread-summary{margin:0;gap:6px 10px}.curve-trigger{display:inline-flex;align-items:center;justify-content:center;flex:none;width:68px;min-height:44px;padding:10px;background:transparent;color:var(--accent);border-radius:8px;cursor:pointer}.curve-trigger:hover,.curve-trigger:focus-visible{background:var(--accent-dim)}.compact-curve{display:flex;align-items:flex-end;gap:3px;width:42px;height:14px}.curve-fill{flex:1;height:var(--bar-height);border-radius:2px 2px 0 0;background:currentColor}.curve-fill.is-empty{height:2px;opacity:.28}.curve-fill.unknown{height:8px;background:transparent;border:1px dashed currentColor;opacity:.65}
 .curve-intro{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.curve-intro p{font-size:12px;color:var(--muted)}.curve-columns{display:flex;align-items:flex-start;gap:18px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#665675 transparent;padding:6px 4px 18px;isolation:isolate}.curve-columns.dragging{cursor:grabbing;user-select:none;scroll-snap-type:none}.curve-column{flex:0 0 182px;min-width:0;scroll-snap-align:start}.curve-column-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}.curve-column-heading h3{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}.curve-column-heading h3 span{display:grid;place-items:center;min-width:28px;min-height:28px;padding-inline:5px;border:1px solid #51445f;border-radius:50%;color:var(--accent);font-variant-numeric:tabular-nums}.curve-column-heading small{font-size:11px;color:var(--muted)}.curve-stack{list-style:none;margin:0;padding:0}.curve-stack>li{position:relative;isolation:isolate}.curve-stack>li:not(:last-child){height:58px}.curve-stack .card-image-button{width:100%;box-shadow:0 -3px 12px #0005}.curve-stack .card-image-button:hover{transform:none}.curve-stack .card-image-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.curve-stack .card-quantity{inset:32px 8px auto auto;box-shadow:0 1px 4px #0008}.curve-empty{border:1px dashed var(--line);border-radius:10px;min-height:96px;display:grid;place-items:center;color:var(--muted);font-size:12px}.curve-data-note{color:var(--muted);font-size:12px;margin-bottom:12px}.curve-stack .card-placeholder strong{padding-inline-end:26px}.curve-column.unknown-column h3 span{font-size:12px}
 
-.sample-group{margin-top:18px}.sample-group h4{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:10px}.sample-mana{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}.sample-cards.sample-lands{grid-template-columns:repeat(auto-fill,minmax(80px,110px));gap:16px;padding-top:8px}.sample-land-art{position:relative;isolation:isolate;margin-inline-end:8px}.sample-land-art.stacked:before,.sample-land-art.stacked:after{content:'';position:absolute;inset:0;border:1px solid #79658b;border-radius:8px;background:var(--panel);z-index:-1}.sample-land-art.stacked:before{transform:translate(4px,-4px)}.sample-land-art.stacked:after{transform:translate(8px,-8px);z-index:-2}.sample-lands .sample-card-name{font-size:11px}
-
-.sample-section{margin-top:22px}.sample-section h3{margin-bottom:12px}.sample-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px;list-style:none;padding:0}.sample-cards li{min-width:0}.sample-cards .card-image-button{width:100%}.sample-card-name{font-size:11px;margin-top:7px}.sample-cards small{display:block;color:var(--muted);margin-top:4px}
+.hand-dialog.dialog{display:flex;flex-direction:column;overflow:hidden;height:min(780px,84dvh)}.hand-dialog .dialog-header,.hand-dialog .dialog-footer{flex:none}.hand-dialog .dialog-content{flex:1;min-height:0;overflow-y:auto}.hand-dialog .dialog-footer{position:static}.hand-dialog .sample-controls{gap:8px}.hand-dialog .sample-controls>.btn{width:auto;font-size:12px;min-height:44px}.hand-dialog .sample-controls>.row{width:auto;gap:6px}.sample-controls [role=status]{font-size:12px;white-space:nowrap}.hand-instruction{font-size:12px;color:var(--muted);margin:5px 0 12px}.hand-deck-name{font-size:12px;color:var(--muted)}.hand-board{--fan-width:184px;--spell-step:92px;--land-step:46px;border-radius:14px;background:radial-gradient(ellipse at 50% 35%,#3c2e4f55,transparent 72%)}.hand-row+.hand-row{margin-top:12px}.hand-row-scroll{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#665675 transparent;padding:34px 18px 20px}.hand-fan{display:flex;align-items:flex-start;list-style:none;padding:0;margin:0 auto;width:max-content;min-height:calc(var(--fan-width)*1.4 + 12px)}.fan-card{position:relative;flex:0 0 var(--fan-width);width:var(--fan-width);z-index:var(--fan-order);transform:translateY(var(--fan-drop)) rotate(var(--fan-tilt));transform-origin:50% 100%;transition:transform .18s ease}.fan-card:not(:last-child){margin-inline-end:calc(var(--spell-step) - var(--fan-width))}.fan-card.is-land:not(:last-child){margin-inline-end:calc(var(--land-step) - var(--fan-width))}.fan-card.is-selected{z-index:20;transform:translateY(-20px) rotate(0deg)}.fan-card.is-selected:not(:last-child){margin-inline-end:12px}.fan-card-button{display:block;width:100%;padding:0;background:transparent;border-radius:10px;text-align:initial;cursor:pointer;position:relative}.fan-card-button .card-image-button{width:100%;box-shadow:-5px 5px 16px #0006;pointer-events:none}.fan-card-button .card-image-button:hover{transform:none}.fan-card-button[aria-pressed=true]{box-shadow:0 0 0 2px var(--accent),0 10px 24px #0007}.fan-card-button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.hand-draw-status{font-size:12px;color:var(--muted)}.hand-draw-status strong{color:var(--text)}.hand-preview{margin-top:12px}.hand-preview .hand-row-scroll{--fan-width:132px;--spell-step:100px;--land-step:100px}.hand-preview .fan-card{transform:none}.hand-preview .fan-card.is-selected{transform:translateY(-12px)}.hand-preview .hand-fan{margin-inline:0}.hand-preview summary{min-height:44px;gap:8px}.hand-preview summary svg{width:14px;height:14px;transition:transform .15s}.hand-preview[open] summary svg{transform:rotate(180deg)}.hand-row-scroll.dragging{cursor:grabbing;user-select:none}.hand-row-scroll .card-placeholder strong{font-size:12px}
+@media(max-width:600px){.hand-board{--fan-width:152px;--spell-step:46px;--land-step:30px}.hand-row-scroll{padding-inline:10px}.hand-dialog .sample-controls{margin-bottom:12px}.hand-dialog .dialog-footer{flex-wrap:wrap}.hand-dialog .dialog-footer>.btn{flex:0 1 auto;min-width:0;max-width:100%}.hand-draw-status{font-size:11px}.hand-preview .hand-row-scroll{--fan-width:128px;--spell-step:72px;--land-step:72px}}
+@media(prefers-reduced-motion:reduce){.fan-card{transition:none}}
 .token-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;margin-top:20px}.token-card{min-width:0}.token-card img{display:block;width:100%;border-radius:10px;margin-bottom:10px}.token-card h3{font-size:16px}.token-card p{font-size:12px;margin-top:7px;white-space:pre-line}.token-card .text-button{display:inline-flex;margin-top:10px;min-height:36px}.token-picture{aspect-ratio:672/936;background:var(--panel);border-radius:10px;margin-bottom:10px}
-@media(max-width:600px){.pair-slots{grid-template-columns:minmax(0,1fr)}.pair-slot,.pair-slot.filled{min-height:180px;padding:18px}.pair-slot h3{font-size:23px}.pair-slot p{font-size:12px}.pair-slot .slot-copy small{font-size:12px}.sample-cards,.token-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sample-controls>.btn{width:100%}.sample-controls>.row{width:100%;justify-content:space-between}.deck-tools .btn{min-height:40px}.sample-cards{gap:18px 12px}}
+@media(max-width:600px){.pair-slots{grid-template-columns:minmax(0,1fr)}.pair-slot,.pair-slot.filled{min-height:180px;padding:18px}.pair-slot h3{font-size:23px}.pair-slot p{font-size:12px}.pair-slot .slot-copy small{font-size:12px}.token-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sample-controls>.btn{width:100%}.sample-controls>.row{width:100%;justify-content:space-between}.deck-tools .btn{min-height:40px}}
 
 .pair-slot .remove-slot svg{width:18px;height:18px}
 @media(max-width:600px){
@@ -2267,7 +2267,7 @@ function cardNavigation(button){
   else if(context?.dataset.cardContext==='inventory')items=filteredInventory().map(c=>({key:c.key,printing:''}));
   else {
     const scope=context||button.closest('.hero-stage,.comparison-table,.match-card,.inline-missing,.deck-columns,.dialog-content')||button.parentElement;
-    items=[...scope.querySelectorAll('[data-action="card"]')].map(b=>({key:b.dataset.key,printing:b.dataset.printing||''}));
+    items=[...scope.querySelectorAll('[data-action="card"],[data-action="hand-card"]')].map(b=>({key:b.dataset.key,printing:b.dataset.printing||''}));
   }
   const target={key:button.dataset.key,printing:button.dataset.printing||''};
   return navigationFor(items,target,'cards in this list',x=>x.key+'::'+x.printing);
@@ -2319,24 +2319,42 @@ function playDeckDialogHTML(m){
 function dealSample(pair){
   const library=pair.flatMap(id=>idx.decks.get(id).cards.flatMap(c=>Array(c.quantity).fill(normalizeName(c.name))));
   for(let i=library.length-1;i>0;i--){const j=randomIndex(i+1);[library[i],library[j]]=[library[j],library[i]];}
-  return library.slice(0,10);
+  return {library,drawn:7,selected:null};
 }
-// Sorting and stacking only affect presentation; samples retain their original draw order.
-function openingHandGroups(keys){
-  const lands=new Map(),nonlands=[];
-  for(const key of keys){const card=idx.cards.get(key);if(card.isLand)lands.set(key,(lands.get(key)||0)+1);else nonlands.push(key);}
-  const manaValue=key=>{const value=idx.cards.get(key).manaValue;return Number.isFinite(value)&&value>=0?value:Infinity;};
-  nonlands.sort((a,b)=>manaValue(a)-manaValue(b)||idx.cards.get(a).name.localeCompare(idx.cards.get(b).name));
-  return {nonlands,lands:[...lands].map(([key,quantity])=>({key,quantity}))};
+// Each physical copy keeps its draw index. Sort only within each seven-card batch.
+function handRows(sample){
+  const rows=[];
+  const manaValue=card=>Number.isFinite(card.manaValue)&&card.manaValue>=0?card.manaValue:Infinity;
+  for(let start=0;start<sample.drawn;start+=7){
+    const row=sample.library.slice(start,Math.min(start+7,sample.drawn)).map((key,i)=>({key,drawIndex:start+i}));
+    row.sort((a,b)=>{const ca=idx.cards.get(a.key),cb=idx.cards.get(b.key);return Number(!!cb.isLand)-Number(!!ca.isLand)||(ca.isLand?0:manaValue(ca)-manaValue(cb))||ca.name.localeCompare(cb.name)||a.drawIndex-b.drawIndex;});
+    rows.push(row);
+  }
+  return rows;
 }
-function sampleCardsHTML(entries,{draws=false,lands=false}={}){
-  return `<ol class="sample-cards ${lands?'sample-lands':''}" data-card-context="sample">${entries.map(({key,quantity=1},i)=>{const card=idx.cards.get(key),mv=card.manaValue;
-    return `<li data-sample-key="${e(key)}" data-sample-quantity="${quantity}">${draws?`<span class="sample-mana">Draw ${i+1}</span>`:!lands?`<span class="sample-mana">Mana value ${Number.isFinite(mv)&&mv>=0?mv:'unknown'}</span>`:''}<div class="${lands?'sample-land-art '+(quantity>1?'stacked':''):''}">${cardPicture(card,quantity)}</div><p class="sample-card-name">${lands?`${quantity} × `:''}${e(card.name)} ${breadLettersHTML(card)}</p></li>`;
-  }).join('')}</ol>`;
+function handFanHTML(entries,m,rowId,{preview=false}={}){
+  const sample=m.samples[m.sampleIndex];
+  return `<div class="hand-row-scroll" data-shelf="hand-${m.sampleIndex}-${rowId}" tabindex="0" role="group" aria-label="${preview?'Upcoming cards in draw order':'Hand row, scroll to see every card'}"><ol class="hand-fan">${entries.map(({key,drawIndex},i)=>{const card=idx.cards.get(key),selected=sample.selected===drawIndex,offset=i-(entries.length-1)/2;
+    return `<li class="fan-card ${card.isLand?'is-land':''} ${selected?'is-selected':''}" data-sample-key="${e(key)}" data-sample-quantity="1" data-draw-index="${drawIndex}" style="--fan-order:${i+1};--fan-tilt:${offset*1.3}deg;--fan-drop:${Math.abs(offset)*1.5}px"><button class="fan-card-button" id="hand-card-${m.sampleIndex}-${drawIndex}" data-action="hand-card" data-key="${e(key)}" data-hand-index="${drawIndex}" aria-pressed="${selected}" aria-label="${selected?'Open details for':'Bring forward'} ${e(card.name)}${preview?', upcoming draw '+(i+1):''}">${cardPicture(card,1,{button:false})}</button></li>`;
+  }).join('')}</ol></div>`;
 }
 function handsDialogHTML(m){
-  const sample=m.samples[m.sampleIndex],{nonlands,lands}=openingHandGroups(sample.slice(0,7)),landCount=lands.reduce((sum,c)=>sum+c.quantity,0);
-  return dialogFrame('Test opening hands',`<div class="sample-controls"><button class="btn btn-primary" data-action="deal-hand">${icon('shuffle')}Shuffle & deal again</button><div class="row"><button class="icon-button" data-action="hand-step" data-direction="-1" aria-label="Previous sample" ${m.sampleIndex===0?'disabled':''}>${icon('left')}</button><span role="status" aria-live="polite">Sample ${m.sampleIndex+1} of ${m.samples.length}</span><button class="icon-button" data-action="hand-step" data-direction="1" aria-label="Next sample" ${m.sampleIndex===m.samples.length-1?'disabled':''}>${icon('right')}</button></div></div><p class="muted">${e(pairTitle(m.pair))}</p><p class="form-hint">Shuffle all 40 cards. Explore any card; earlier samples stay here while this dialog is open.</p><section class="sample-section" aria-label="Opening hand"><h3>Opening hand · 7 cards</h3><div class="sample-group"><h4>${nonlands.length} nonlands · mana value, low to high</h4>${nonlands.length?sampleCardsHTML(nonlands.map(key=>({key}))):'<p class="form-hint">No nonlands in this hand.</p>'}</div><div class="sample-group"><h4>${landCount} lands</h4>${lands.length?sampleCardsHTML(lands,{lands:true}):'<p class="form-hint">No lands in this hand.</p>'}</div></section><section class="sample-section" aria-label="Next three draws"><h3>Next three draws</h3>${sampleCardsHTML(sample.slice(7).map(key=>({key})),{draws:true})}</section>`,'','wide hand-dialog');
+  const sample=m.samples[m.sampleIndex],rows=handRows(sample),remaining=sample.library.length-sample.drawn,preview=sample.library.slice(sample.drawn,sample.drawn+3).map((key,i)=>({key,drawIndex:sample.drawn+i}));
+  const footer=`<span class="hand-draw-status" role="status" aria-live="polite"><strong>${sample.drawn}</strong> cards · ${remaining} in library</span><button class="btn btn-primary" data-action="draw-hand" ${remaining?'':'disabled'}>${icon('plus')}${remaining?'Draw a card':'Library empty'}</button>`;
+  return dialogFrame('Test opening hands',`<div class="sample-controls"><button class="btn btn-secondary" data-action="deal-hand">${icon('shuffle')}Shuffle & deal again</button><div class="row"><button class="icon-button" data-action="hand-step" data-direction="-1" aria-label="Previous sample" ${m.sampleIndex===0?'disabled':''}>${icon('left')}</button><span role="status" aria-live="polite" aria-label="Sample ${m.sampleIndex+1} of ${m.samples.length}">${m.sampleIndex+1} of ${m.samples.length}</span><button class="icon-button" data-action="hand-step" data-direction="1" aria-label="Next sample" ${m.sampleIndex===m.samples.length-1?'disabled':''}>${icon('right')}</button></div></div><p class="hand-deck-name">${e(pairTitle(m.pair))}</p><p class="hand-instruction">Tap a card to bring it forward. Tap again for details.</p><div class="hand-board" data-card-context="sample">${rows.map((row,i)=>`<section class="hand-row" aria-label="${i?'Drawn cards '+(i*7-6)+' to '+(i*7-7+row.length):'Opening hand'}">${handFanHTML(row,m,i)}</section>`).join('')}</div>${preview.length?`<details class="native-details hand-preview" data-disclosure="hand-next-draws"><summary>${icon('down')}Next ${preview.length} ${preview.length===1?'draw':'draws'}</summary><section aria-label="Upcoming draws" data-card-context="sample">${handFanHTML(preview,m,'preview',{preview:true})}</section></details>`:''}`,footer,'wide hand-dialog');
+}
+function selectHandCard(button){
+  const m=ui.modal;if(m?.kind!=='hands')return;
+  const sample=m.samples[m.sampleIndex],index=Number(button.dataset.handIndex);
+  if(!Number.isInteger(index)||index<0||index>=Math.min(sample.library.length,sample.drawn+3))return;
+  if(sample.selected===index){showCard(button);return;}
+  sample.selected=index;
+  for(const control of modalRoot.querySelectorAll('[data-action="hand-card"]')){
+    const selected=Number(control.dataset.handIndex)===index;
+    control.setAttribute('aria-pressed',String(selected));control.closest('.fan-card').classList.toggle('is-selected',selected);
+    control.setAttribute('aria-label',control.getAttribute('aria-label').replace(/^(Bring forward|Open details for)/,selected?'Open details for':'Bring forward'));
+  }
+  modalRoot.querySelector(`#hand-card-${m.sampleIndex}-${index}`)?.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
 }
 function tokensButton(decks){return `<button class="btn btn-secondary btn-small" data-action="deck-tokens" data-decks="${decks.join(',')}">${icon('cards')}View tokens</button>`;}
 async function loadDeckTokens(){
@@ -2467,8 +2485,11 @@ function modalScrollState(){return {disclosures:[...modalRoot.querySelectorAll('
 function renderModal(initial=false){
   const openPopovers=openPopoverIds();const f=captureFocus();if(ui.modal&&!initial)ui.modal.scrollState=modalScrollState();
   const scroll=ui.modal?.scrollState||{dialog:0,content:0,shelves:[]};
+  const handArt=ui.modal?.kind==='hands'?new Map([...modalRoot.querySelectorAll('.fan-card-button img')].filter(img=>img.getAttribute('src')).map(img=>[img.closest('button').id,img])):null;
   for(const img of modalRoot.querySelectorAll('img[data-src]'))imageObserver?.unobserve(img);
-  modalRoot.innerHTML=modalHTML();document.body.classList.toggle('modal-open',!!ui.modal);root.inert=!!ui.modal;
+  modalRoot.innerHTML=modalHTML();
+  if(handArt)for(const picture of modalRoot.querySelectorAll('.fan-card-button img')){const previous=handArt.get(picture.closest('button').id);if(previous&&previous.src===picture.dataset.src)picture.replaceWith(previous);}
+  document.body.classList.toggle('modal-open',!!ui.modal);root.inert=!!ui.modal;
   if(ui.modal){for(const [id,open]of scroll.disclosures||[]){const disclosure=modalRoot.querySelector(`[data-disclosure="${CSS.escape(id)}"]`);if(disclosure)disclosure.open=open;}restorePopovers(openPopovers);lazyImages(modalRoot);setupSpatial(modalRoot);const dialog=modalRoot.querySelector('.dialog'),content=modalRoot.querySelector('.dialog-content');if(dialog)dialog.scrollTop=scroll.dialog;if(content)content.scrollTop=scroll.content;
     for(const [id,left] of scroll.shelves){const shelf=modalRoot.querySelector(`[data-shelf="${CSS.escape(id)}"]:not(button)`);if(shelf)shelf.scrollLeft=left;}
     if(initial){const auto=modalRoot.querySelector('#saved-name,#picker-search,#csv-drop');(auto||dialog)?.focus({preventScroll:true});}else restoreFocus(f,modalRoot);
@@ -2479,12 +2500,12 @@ function showModal(kind,data={},stack=false){
   const fromDrawer=ui.mobileOpen,active=document.activeElement,sourcePopover=active?.closest('[popover]');
   const origin=sourcePopover?document.querySelector(`[popovertarget="${CSS.escape(sourcePopover.id)}"]`):active;
   closePopovers();if(fromDrawer){ui.mobileOpen=false;render();}
-  if(ui.modal&&stack){if(kind==='mana-curve'||ui.modal.kind==='mana-curve')ui.modal.curveReturnFocus=captureFocus();ui.modal.scrollState=modalScrollState();ui.modalStack.push(ui.modal);}else if(!stack)ui.modalStack=[];
+  if(ui.modal&&stack){if(kind==='mana-curve'||ui.modal.kind==='mana-curve'||ui.modal.kind==='hands')ui.modal.nestedReturnFocus=captureFocus();ui.modal.scrollState=modalScrollState();ui.modalStack.push(ui.modal);}else if(!stack)ui.modalStack=[];
   if(!ui.modal){ui.opener=fromDrawer?document.querySelector('[data-action=menu]'):origin;ui.openerFocus=fromDrawer?{action:'menu'}:origin?.id?{id:origin.id}:captureFocus();}
   ui.modal={kind,...data};renderModal(true);
 }
 function closeModal(all=false){
-  if(!all&&ui.modalStack.length){ui.modal=ui.modalStack.pop();renderModal(true);if(ui.modal.curveReturnFocus){restoreFocus(ui.modal.curveReturnFocus,modalRoot);delete ui.modal.curveReturnFocus;}return;}
+  if(!all&&ui.modalStack.length){ui.modal=ui.modalStack.pop();renderModal(true);if(ui.modal.nestedReturnFocus){restoreFocus(ui.modal.nestedReturnFocus,modalRoot);delete ui.modal.nestedReturnFocus;}return;}
   ui.modal=null;ui.modalStack=[];modalRoot.innerHTML='';document.body.classList.remove('modal-open');root.inert=false;
   if(ui.opener?.isConnected)ui.opener.focus({preventScroll:true});else if(!restoreFocus(ui.openerFocus,root))document.querySelector('#main')?.focus({preventScroll:true});
   ui.opener=null;ui.openerFocus=null;
@@ -2569,6 +2590,8 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'reset-filters':ui.colors=[];ui.packFilter='all';ui.packType='';ui.themeQuery='';render();break;
  case'mana-curve':{const decks=(button.dataset.decks||'').split(',').filter(id=>idx.decks.has(id));if(decks.length)showModal('mana-curve',{decks},!!ui.modal);break;}
  case'test-hands':{const pair=(button.dataset.pair||'').split(',');if(completePair(pair))showModal('hands',{pair,samples:[dealSample(pair)],sampleIndex:0},!!ui.modal);break;}
+ case'hand-card':selectHandCard(button);break;
+ case'draw-hand':if(ui.modal?.kind==='hands'){const m=ui.modal,sample=m.samples[m.sampleIndex];if(sample.drawn<sample.library.length){sample.drawn++;sample.selected=null;renderModal();modalRoot.querySelector(`#hand-card-${m.sampleIndex}-${sample.drawn-1}`)?.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});}}break;
  case'deal-hand':if(ui.modal?.kind==='hands'){ui.modal.samples.push(dealSample(ui.modal.pair));ui.modal.sampleIndex=ui.modal.samples.length-1;renderModal();}break;
  case'hand-step':if(ui.modal?.kind==='hands'){ui.modal.sampleIndex=Math.max(0,Math.min(ui.modal.samples.length-1,ui.modal.sampleIndex+Number(button.dataset.direction)));renderModal();}break;
  case'deck-tokens':{const decks=(button.dataset.decks||'').split(',');if(decks.length&&decks.every(id=>idx.decks.has(id))){showModal('tokens',{decks,items:[],loading:false,error:''},!!ui.modal);loadDeckTokens();}break;}

@@ -136,14 +136,23 @@ a different eligible variant. If filters leave no alternative, the mix stays int
 and a message explains why.
 
 Test opening hands is available from the builder, pairing cards, saved mixes, and
-play-deck dialogs. `dealSample` expands both full catalog lists (including basic
-lands and repeated copies), shuffles all 40 cards with Fisher–Yates, and takes seven
-cards plus the next three draws without replacement. Samples and their history
-exist only in the dialog; filtering or ownership never changes the sampled deck.
-The opening hand displays nonlands in ascending mana value (name breaks ties;
-unknown values come last) and groups lands by name into compact stacks with
-copy counts. This is display-only: stored samples and the next three draws keep
-their original order. Every distinct card remains available to inspect.
+play-deck dialogs. `dealSample` expands both full catalog lists, including basic
+lands and repeated copies, and shuffles all 40 cards with Fisher–Yates. Each
+in-memory sample stores that library, its drawn count (initially seven), and the
+selected physical copy's draw index. Draw a card consumes the next copy without
+reshuffling; it stops at 40. History retains each sample's progress and selection.
+No collection or preference storage changes.
+
+`handRows` creates stable batches of seven. Each batch displays lands first, then
+nonlands by ascending mana value (name breaks ties; unknown mana sorts last).
+It never sorts the underlying library or moves cards between completed rows.
+The fan overlaps lands more tightly than spells and scrolls horizontally when
+needed. First activation brings a card forward and expands its space; activating
+that same physical copy again opens details. Enter/Space follow the same rule.
+Back restores the selected copy, keyboard focus, and scroll. Selection updates
+in place; draws retain existing artwork nodes to avoid flashes. The optional
+Next three draws disclosure previews the next library entries in actual order
+and advances as cards are drawn. Filtering or ownership never changes the sample.
 
 Pack and play-deck dialogs offer View tokens. Related token/emblem IDs come from
 Scryfall `all_parts` for the cards in the full deck, independent of card filters.
@@ -227,9 +236,10 @@ and history, saved recipes, token retry/cache/deduplication, and overflow at 128
 412, and 320 CSS pixels. Also verify images and token relationships once with live
 Scryfall data before publishing related changes.
 
-`tests/hand-layout.cjs` checks land stacking, mana ordering, sample preservation,
-full-list pack and combined-deck curves, unknown metadata, mobile widths, RTL,
-and 200% CSS zoom. `tests/mana-curve.cjs` covers the sparkline, full-list
+`tests/hand-layout.cjs` checks two-stage fan selection, all 40 draws against the
+exact deck multiset, preview consumption, stable seven-card rows, mana ordering,
+independent duplicate copies, retained artwork, sample history, keyboard and
+focus return, offline drawing, mobile widths, RTL and 200% CSS zoom. `tests/mana-curve.cjs` covers the sparkline, full-list
 column counts, overlapping-card taps, keyboard/scroll/focus restoration,
 mobile fullscreen bounds, zero/unknown mana, and identical halves. Use
 `ATLAS_BROWSER=firefox` for a second browser.
