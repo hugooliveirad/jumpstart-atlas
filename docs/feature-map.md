@@ -168,13 +168,13 @@ Advanced fields compose the search string. Remote results remain intersected wit
 
 **Observed entry points:** complete mixing-room builder, pairing cards, saved cards, and deck dialogs. Source anchors: `dealSample`, `handsDialogHTML`, `test-hands`/`deal-hand` actions.
 
-**Capabilities:** seven-card opening hand; Draw a card through the same 40-card library; batches of seven in exact draw order, with tighter land spacing and smaller rows when needed; first tap brings a physical card forward, second opens details; optional next-three preview; Shuffle & deal again; previous/next samples retaining drawn counts and selection; exact focus and scroll return through Back.
+**Capabilities:** seven-card opening hand; Draw a card through the same 40-card library; rows of seven in exact draw order, with tighter land spacing and responsive overlap; first tap brings a physical card forward, second opens details; optional next-three preview; Shuffle & deal again; previous/next samples retaining drawn counts and selection; exact focus and scroll return through Back.
 
 **Essential information:** recipe identity, sample number, the drawn cards, remaining library count, the two-tap instruction, and direct draw/deal-again actions.
 
 **Optional information:** a full explanation of the shuffle algorithm or repeated recipe description.
 
-**Implemented:** compact shuffle/history controls, overlapping card fans, and a persistent Draw a card footer. Completed seven-card rows never rearrange when drawing. Selecting expands a card’s space rather than covering adjacent targets. Rows tighten their spacing or wrap to fit without horizontal scrolling, including when a card is selected. The next-three preview stays in a disclosure and fits the same way. Artwork is retained while selecting and drawing.
+**Implemented:** compact shuffle/history controls, overlapping card fans, and a persistent Draw a card footer. Completed seven-card rows never rearrange when drawing. Selecting lifts a card in place; neighboring cards remain accessible at their exposed lower edges. Rows tighten their spacing and scale cards as needed to keep all seven together without horizontal scrolling. The next-three preview stays in a disclosure and fits the same way. Artwork is retained while selecting and drawing.
 
 **Invariants:** expand quantities from both complete catalog lists, including lands and repeated copies; shuffle all 40 cards with Fisher–Yates; draw without replacement within a sample; filters and ownership never alter the sampled deck. Separate samples can repeat cards. History is temporary and is not part of the saved recipe. This is an opening-hand sampler, not a full game engine or mulligan simulator.
 

@@ -22,7 +22,11 @@ const mixed={library:['unknown','plains','free','plains'],drawn:4};
 assert.deepEqual(JSON.parse(JSON.stringify(handRows(mixed)[0])).map(c=>c.key),['unknown','plains','free','plains']);
 const boardCards=page=>page.locator('.hand-board [data-sample-key]').evaluateAll(els=>els.map(el=>({key:el.dataset.sampleKey,index:Number(el.dataset.drawIndex)})));
 const inDrawOrder=cards=>[...cards].sort((a,b)=>a.index-b.index).map(c=>c.key);
-const tap=async button=>{await button.scrollIntoViewIfNeeded();await button.click({position:{x:15,y:70}});};
+const tap=async button=>{
+ await button.scrollIntoViewIfNeeded();
+ const point=await button.evaluate(button=>{const r=button.getBoundingClientRect();for(let y=r.bottom-8;y>r.top;y-=8)for(let x=r.left+8;x<r.right;x+=8)if(button.contains(document.elementFromPoint(x,y)))return {x,y};});
+ assert(point,'Every physical copy has an exposed tappable area');await button.page().mouse.click(point.x,point.y);await button.page().waitForTimeout(220);
+};
 (async()=>{
  const browser=await (process.env.ATLAS_BROWSER==='firefox'?firefox:chromium).launch();
  try{
@@ -35,7 +39,9 @@ const tap=async button=>{await button.scrollIntoViewIfNeeded();await button.clic
    await page.locator('.mix-builder [data-action=test-hands]').click();
    const fit=async()=>{
     await page.waitForTimeout(250);
-    const overflow=await page.evaluate(()=>[...document.querySelectorAll('.hand-dialog,.hand-dialog .dialog-content,.hand-row-layout')].filter(el=>el.checkVisibility()&&el.scrollWidth>el.clientWidth+1).map(el=>({class:el.className,width:el.clientWidth,scroll:el.scrollWidth,fit:el.dataset.fit,preview:!!el.closest('.hand-preview'),visible:el.checkVisibility(),viewport:innerWidth})));
+    const batches=await page.locator('.hand-board .hand-row').evaluateAll(rows=>rows.map(row=>({fans:row.querySelectorAll('.hand-fan').length,cards:row.querySelectorAll('.fan-card').length})));
+    assert(batches.every((row,i)=>row.fans===1&&(i===batches.length-1?row.cards>=1&&row.cards<=7:row.cards===7)),'Every completed batch is one row of seven, including during selection');
+    const overflow=await page.evaluate(()=>[...document.querySelectorAll('.hand-dialog,.hand-dialog .dialog-content,.hand-row-layout')].filter(el=>el.checkVisibility()&&el.scrollWidth>el.clientWidth+1).map(el=>({class:el.className,width:el.clientWidth,scroll:el.scrollWidth,preview:!!el.closest('.hand-preview'),visible:el.checkVisibility(),viewport:innerWidth})));
     assert.deepEqual(overflow,[],'Every fan and the dialog fit without horizontal scrolling');
     const clipped=await page.locator('.hand-row-layout').evaluateAll(rows=>rows.flatMap(row=>{if(!row.checkVisibility())return [];const bounds=row.getBoundingClientRect();return [...row.querySelectorAll('.fan-card-button')].filter(card=>{const r=card.getBoundingClientRect();return r.width&&(r.left<bounds.left-1||r.right>bounds.right+1);}).map(card=>card.id);}));
     assert.deepEqual(clipped,[],'Rotated and selected cards stay fully inside their row');
@@ -44,7 +50,10 @@ const tap=async button=>{await button.scrollIntoViewIfNeeded();await button.clic
    const firstRow=await page.locator('.hand-row').first().locator('[data-sample-key]').evaluateAll(els=>els.map(el=>el.dataset.drawIndex));
    const first=page.locator('.hand-board [data-action=hand-card]').first();
    await first.locator('img').waitFor();const selectedArt=await first.locator('img').elementHandle();await tap(first);assert(await selectedArt.evaluate(img=>img.isConnected),'Selecting retains the image node');assert.equal(await page.locator('[data-dialog-kind=hands]').count(),1);assert.equal(await first.getAttribute('aria-pressed'),'true');
-   await fit();const selectedId=await first.getAttribute('id');await first.click();await page.locator('[data-dialog-kind=card]').waitFor();await page.getByRole('button',{name:'Back',exact:true}).click();assert.equal(await page.evaluate(()=>document.activeElement.id),selectedId);assert.equal(await page.locator('#'+selectedId).getAttribute('aria-pressed'),'true');
+   await fit();const openingIds=await page.locator('.hand-board .fan-card-button').evaluateAll(buttons=>buttons.map(button=>button.id));
+   const positions=await page.locator('.hand-board .fan-card').evaluateAll(cards=>cards.map(card=>[card.offsetLeft,card.offsetTop]));
+   for(const id of openingIds.slice(1)){await tap(page.locator('#'+id));await fit();assert.deepEqual(await page.locator('.hand-board .fan-card').evaluateAll(cards=>cards.map(card=>[card.offsetLeft,card.offsetTop])),positions,'Selecting keeps every card in place');}
+   await tap(first);const selectedId=await first.getAttribute('id');await first.click();await page.locator('[data-dialog-kind=card]').waitFor();await page.getByRole('button',{name:'Back',exact:true}).click();assert.equal(await page.evaluate(()=>document.activeElement.id),selectedId);assert.equal(await page.locator('#'+selectedId).getAttribute('aria-pressed'),'true');
    // Expand preview once; it stays open while its first card is consumed by Draw.
    await page.locator('.hand-preview summary').click();
    const preview=()=>page.locator('[aria-label="Upcoming draws"] [data-sample-key]').evaluateAll(els=>els.map(el=>el.dataset.sampleKey));
@@ -68,7 +77,7 @@ const tap=async button=>{await button.scrollIntoViewIfNeeded();await button.clic
    await page.locator('[data-action=deal-hand]').click();assert.equal((await boardCards(page)).length,7);assert.equal(await page.locator('.hand-board [aria-pressed=true]').count(),0);await page.getByRole('button',{name:'Previous sample'}).click();assert.equal((await boardCards(page)).length,40);assert.deepEqual(inDrawOrder(await boardCards(page)),previous);assert.equal(await page.locator('#'+copyId).getAttribute('aria-pressed'),'true');
    await page.getByRole('button',{name:'Next sample'}).click();const keyCard=page.locator('.hand-board [data-action=hand-card]').first();await keyCard.focus();await page.keyboard.press('Space');assert.equal(await keyCard.getAttribute('aria-pressed'),'true');assert.equal(await page.locator('[data-dialog-kind=hands]').count(),1);await page.keyboard.press('Space');await page.locator('[data-dialog-kind=card]').waitFor();await page.keyboard.press('Escape');
    await page.locator('.hand-preview summary').click();await fit();await tap(page.locator('.hand-preview [data-action=hand-card]').first());await fit();for(const resizeWidth of [320,412,600,601,768,1280]){await page.setViewportSize({width:resizeWidth,height:920});await fit();}await page.setViewportSize({width,height:920});await page.evaluate(()=>document.documentElement.dir='rtl');await fit();await page.evaluate(()=>{document.documentElement.dir='ltr';document.body.style.zoom='2';});await fit();await page.evaluate(()=>document.body.style.zoom='');
-   assert.equal(await page.evaluate(()=>localStorage.getItem('jumpstart-atlas.collection.v1')),beforeStorage);assert.deepEqual(errors,[]);await context.close();console.log(`PASS ${width}px: two-tap fan, 40-card draws/preview, adaptive rows without horizontal scrolling, draw order, duplicates, sample history, focus, keyboard, RTL, zoom`);
+   assert.equal(await page.evaluate(()=>localStorage.getItem('jumpstart-atlas.collection.v1')),beforeStorage);assert.deepEqual(errors,[]);await context.close();console.log(`PASS ${width}px: two-tap fan, 40-card draws/preview, fixed seven-card rows without horizontal scrolling, draw order, duplicates, sample history, focus, keyboard, RTL, zoom`);
   }
   const context=await browser.newContext({viewport:{width:320,height:920}}),page=await context.newPage();await page.route('https://**/*',route=>route.abort());await page.goto(origin+'#pairings?packs=legion-1,legion-1');await page.locator('.mix-builder [data-action=test-hands]').click();await page.locator('[data-action=draw-hand]').click();assert.equal((await boardCards(page)).length,8);assert.equal(await page.locator('.hand-row').count(),2);await tap(page.locator('.hand-board [data-action=hand-card]').first());assert.equal(await page.locator('.hand-board [aria-pressed=true]').count(),1);await context.close();console.log('PASS offline: bundled card copies remain drawable and inspectable');
  }finally{await browser.close();}
