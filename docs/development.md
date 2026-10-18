@@ -74,6 +74,27 @@ with shrinking tracks rather than a fixed minimum. Horizontal shelves retain
 their layout. At 412 CSS pixels, cards are approximately 180px wide (depending
 on container padding); below 320px the grid uses one column.
 
+## Optional comparison analysis
+
+Version comparison opens on Cards; Analysis compares all versions. The mixing
+room has an independent Analysis toggle, off in a fresh session, showing each
+selected half and their combined deck. Full-list quantities drive every count;
+missing metadata is explicitly unknown. Theme synergy retains the existing
+shared-tag heuristic. See [deck-comparison.md](deck-comparison.md) for the
+calculation and display contracts.
+
+The [Removal audit](removal-audit.md) reviews all 768 names. Removal requires
+hostile threat interaction, including tempo and counters. Recursion, own-only
+bounce, graveyard exile, self-imposed combat restrictions and power-only reduction
+do not qualify on their own. Cards with real removal and recursion keep both.
+
+Focused regressions (with an external Playwright installation via NODE_PATH):
+
+```bash
+node tests/removal-tags.cjs
+node tests/deck-comparison.cjs
+```
+
 ## Collection storage
 
 Key `jumpstart-atlas.collection.v1` (see `APP_SCHEMA`). Shape:

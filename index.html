@@ -376,6 +376,35 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
 .dock-pack{background:transparent;border-radius:8px;padding:6px;color:var(--text)}
 .search-box .icon-button{min-width:32px;min-height:32px}
 @media(max-width:900px){.search-box .icon-button{min-width:44px;min-height:44px}}
+/* BEGIN DECK COMPARISON */
+/* Opt-in comparison analysis: same-scale bars with explicit numeric values. */
+.deck-analysis{margin:18px 0;min-width:0;color:var(--text)}
+.analysis-intro,.analysis-note{color:var(--muted);font-size:12px;line-height:1.6;margin:10px 0}
+.analysis-scroll{max-width:100%;overflow:auto;margin:20px 0 8px;border:1px solid var(--line);border-radius:8px;overscroll-behavior-inline:contain}
+.analysis-scroll:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.analysis-table{width:100%;min-width:var(--analysis-min-width,420px);table-layout:fixed;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+.analysis-table caption{text-align:left;font-size:14px;font-weight:600;padding:13px 12px;color:var(--text)}
+.analysis-table th,.analysis-table td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:middle;text-align:right;min-width:84px}
+.analysis-table th:first-child{text-align:left;min-width:125px;width:140px;position:sticky;left:0;z-index:1;background:var(--panel)}
+.analysis-table thead th{font-size:11px;font-weight:500;color:var(--muted);max-width:170px;overflow-wrap:anywhere}
+.analysis-table tbody th{font-weight:500;color:var(--muted)}
+.analysis-table small{display:block;color:var(--muted);font-size:10px;line-height:1.5;margin-top:2px;white-space:nowrap}
+.analysis-number{font-weight:600;color:var(--text)}
+.analysis-bar-cell{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:60px}
+.analysis-bar-cell>.analysis-number{min-width:2ch;text-align:right}
+.analysis-bar-track{display:block;flex:1;height:7px;min-width:30px;background:var(--panel);border-radius:3px;overflow:hidden}
+.analysis-bar-track i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.analysis-empty{padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:20px 0}
+.analysis-empty h3{font-size:14px;margin-bottom:6px}
+.analysis-empty p{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.analysis-tag-present{color:var(--text)}
+.analysis-tag-absent{color:var(--muted)}
+@media(max-width:600px){.analysis-table th,.analysis-table td{padding:9px 8px}.analysis-table caption{padding:12px 8px}.analysis-table th:first-child{min-width:112px}.analysis-scroll{margin-top:16px}.analysis-note,.analysis-intro{font-size:12px}}
+
+.analysis-scroll-hint{display:none;color:var(--muted);font-size:12px;margin:8px 0}@media(max-width:600px){.analysis-scroll-hint{display:block}}
+.analysis-toolbar{margin-top:14px}.analysis-switch{margin-bottom:16px}
+/* END DECK COMPARISON */
+
 </style>
 </head>
 <body>
@@ -410,15 +439,15 @@ CATALOG.cardDraftTags = {
   "Adventurous Impulse":["draw"],
   "Advocate of the Beast":["A","synergy"],
   "Aerial Guide":["E","A","synergy"],
-  "Aether Channeler":["A","draw","tokens"],
+  "Aether Channeler":["R","A","draw","tokens"],
   "Aggressive Instinct":["R"],
   "Agonizing Syphon":["R"],
-  "Ahn-Crop Crasher":["A"],
+  "Ahn-Crop Crasher":["R","A"],
   "Ainok Artillerist":["A"],
   "Ainok Guide":["ramp","synergy"],
   "Air Elemental":["E"],
   "Ajani's Pridemate":["A","synergy"],
-  "Ajani, Adversary of Tyrants":["B","R","recursion","tokens","synergy"],
+  "Ajani, Adversary of Tyrants":["B","recursion","tokens","synergy"],
   "Akroan Crusader":["tokens","synergy"],
   "Akroan Skyguard":["E","synergy"],
   "Alchemist's Gift":["trick"],
@@ -439,7 +468,7 @@ CATALOG.cardDraftTags = {
   "Archfiend's Vessel":["recursion","tokens"],
   "Archon of Falling Stars":["E","recursion"],
   "Archon of Sun's Grace":["B","E","tokens","synergy"],
-  "Arena Athlete":["A","synergy"],
+  "Arena Athlete":["R","A","synergy"],
   "Argivian Phalanx":["ramp","synergy"],
   "Armorcraft Judge":["draw","synergy"],
   "Armored Kincaller":["A"],
@@ -455,7 +484,7 @@ CATALOG.cardDraftTags = {
   "Baloth Gorger":["synergy"],
   "Baloth Woodcrasher":["E","synergy"],
   "Balustrade Spy":["E"],
-  "Band Together":["synergy"],
+  "Band Together":["R","synergy"],
   "Banisher Priest":["R","A"],
   "Banishing Light":["R","synergy"],
   "Basri's Acolyte":["synergy"],
@@ -476,11 +505,11 @@ CATALOG.cardDraftTags = {
   "Bituminous Blast":["R"],
   "Bleed Dry":["R"],
   "Blink of an Eye":["R","draw"],
-  "Blood Beckoning":["R","recursion"],
+  "Blood Beckoning":["recursion"],
   "Blood Burglar":["A"],
   "Blood Feud":["R"],
   "Blood Fountain":["draw","recursion","synergy"],
-  "Blood Hypnotist":["A","synergy"],
+  "Blood Hypnotist":["R","A","synergy"],
   "Blood Petal Celebrant":["A","draw"],
   "Bloodbraid Elf":["A"],
   "Bloodfire Expert":["A","synergy"],
@@ -489,22 +518,22 @@ CATALOG.cardDraftTags = {
   "Bloodthirsty Aerialist":["E","A","synergy"],
   "Bloodtithe Collector":["E"],
   "Boggart Brute":["E","A"],
-  "Boldwyr Intimidator":["E"],
+  "Boldwyr Intimidator":["R","E"],
   "Bond of Flourishing":["draw"],
-  "Bonecaller Cleric":["R","A","recursion"],
-  "Boneclad Necromancer":["R","tokens"],
+  "Bonecaller Cleric":["A","recursion"],
+  "Boneclad Necromancer":["tokens"],
   "Bounty of Skemfar":["draw"],
   "Braulios of Pheres Band":["draw","synergy"],
   "Breaching Hippocamp":["trick"],
   "Briarbridge Tracker":["A","draw"],
-  "Brightmare":["A"],
+  "Brightmare":["R","A"],
   "Brigone, Soldier of Meletis":["A","draw","synergy"],
   "Brimaz, King of Oreskos":["B","A","tokens","synergy"],
   "Brineborn Cutthroat":["A","synergy"],
   "Brothers Yamazaki":["A","synergy"],
   "Brushstrider":["A"],
   "Brute Strength":["E","trick"],
-  "Bury in Books":["ramp"],
+  "Bury in Books":["R","ramp"],
   "Bushwhack":["R","ramp"],
   "Byway Courier":["A","draw"],
   "Cackling Counterpart":["recursion","tokens"],
@@ -515,7 +544,7 @@ CATALOG.cardDraftTags = {
   "Carnelian Orb of Dragonkind":["ramp","synergy"],
   "Cartouche of Knowledge":["draw","synergy"],
   "Cartouche of Solidarity":["tokens","synergy"],
-  "Cartouche of Zeal":["synergy"],
+  "Cartouche of Zeal":["R","synergy"],
   "Cavalier of Gales":["B","E","draw"],
   "Cave of Temptation":["land","ramp"],
   "Celestial Enforcer":["R","A"],
@@ -525,12 +554,12 @@ CATALOG.cardDraftTags = {
   "Charmbreaker Devils":["recursion","synergy"],
   "Cherished Hatchling":["R","A","synergy"],
   "Chief of the Foundry":["A","synergy"],
-  "Chilling Trap":["R","draw"],
+  "Chilling Trap":["draw","trick"],
   "Choking Tethers":["R","draw"],
   "Chosen by Heliod":["draw","synergy"],
   "Chromatic Lantern":["ramp","synergy"],
   "Chrome Prowler":["R","A","synergy"],
-  "Clear Shot":["trick"],
+  "Clear Shot":["R","trick"],
   "Cleon, Merry Champion":["A","draw","synergy"],
   "Cliffhaven Kitesail":["synergy"],
   "Cloudkin Seer":["E","A","draw"],
@@ -542,7 +571,7 @@ CATALOG.cardDraftTags = {
   "Conclave Tribunal":["R","synergy"],
   "Contract Killing":["R","ramp"],
   "Coordinated Assault":["trick"],
-  "Crawl from the Cellar":["R","recursion","synergy"],
+  "Crawl from the Cellar":["recursion","synergy"],
   "Creeping Bloodsucker":["synergy"],
   "Crimson Wisps":["draw"],
   "Crooked Custodian":["A"],
@@ -582,7 +611,7 @@ CATALOG.cardDraftTags = {
   "Divine Arrow":["R"],
   "Divine Favor":["synergy"],
   "Doomed Dissenter":["tokens"],
-  "Doomed Necromancer":["R","A","recursion"],
+  "Doomed Necromancer":["A","recursion"],
   "Drag Under":["R","draw"],
   "Dragon Hatchling":["E"],
   "Dragon Whelp":["E"],
@@ -595,7 +624,7 @@ CATALOG.cardDraftTags = {
   "Dropkick Bomber":["E","A"],
   "Dross Hopper":["E","A"],
   "Drover of the Mighty":["ramp"],
-  "Drowsing Tyrannodon":["R","A"],
+  "Drowsing Tyrannodon":["A"],
   "Druid of the Anima":["ramp"],
   "Durable Coilbug":["A","recursion"],
   "Dusk Mangler":["R"],
@@ -612,9 +641,9 @@ CATALOG.cardDraftTags = {
   "Emberhorn Minotaur":["E"],
   "Endless Cockroaches":["recursion"],
   "Enlisted Wurm":["draw"],
-  "Entomber Exarch":["R","recursion"],
+  "Entomber Exarch":["recursion"],
   "Epicure of Blood":["synergy"],
-  "Eternal Taskmaster":["R","A","recursion","synergy"],
+  "Eternal Taskmaster":["A","recursion","synergy"],
   "Evereth, Viceroy of Plunder":["E","A","synergy"],
   "Evolving Wilds":["land","ramp"],
   "Exclusion Mage":["R","A"],
@@ -681,7 +710,7 @@ CATALOG.cardDraftTags = {
   "Giada, Font of Hope":["E","ramp","synergy"],
   "Giant Growth":["trick"],
   "Giant Opportunity":["tokens"],
-  "Gift of Fangs":["synergy"],
+  "Gift of Fangs":["R","synergy"],
   "Gift of the Gargantuan":["draw"],
   "Gilded Scuttler":["R","E","synergy"],
   "Gingerbrute":["E","A","synergy"],
@@ -695,24 +724,24 @@ CATALOG.cardDraftTags = {
   "Go for the Throat":["R"],
   "Goblin Arsonist":["R"],
   "Goblin Dark-Dwellers":["E","recursion"],
-  "Goblin Fireslinger":["A"],
+  "Goblin Fireslinger":["R","A"],
   "Goblin Goliath":["tokens"],
   "Goblin Rabblemaster":["B","A","tokens","synergy"],
   "Goblin Researcher":["draw"],
   "Goblin Smuggler":["E","A"],
   "Goblin Surprise":["tokens","trick","synergy"],
   "Goblin Trailblazer":["E","A"],
-  "Godsend":["B","synergy"],
+  "Godsend":["B","R","synergy"],
   "Golden-Tail Disciple":["A","synergy"],
-  "Goma Fada Vanguard":["A","synergy"],
-  "Goremand":["E"],
+  "Goma Fada Vanguard":["R","A","synergy"],
+  "Goremand":["R","E"],
   "Gorex, the Tombshell":["ramp","recursion","synergy"],
   "Gorging Vulture":["E","A","synergy"],
   "Gorgon Flail":["synergy"],
-  "Gornog, the Red Reaper":["B","A","synergy"],
+  "Gornog, the Red Reaper":["B","R","A","synergy"],
   "Grave Strength":["synergy"],
   "Graveblade Marauder":["synergy"],
-  "Gravedigger":["R","recursion"],
+  "Gravedigger":["recursion"],
   "Grazing Gladehart":["A","synergy"],
   "Greenwood Sentinel":["A"],
   "Grim Bounty":["R","ramp"],
@@ -736,7 +765,7 @@ CATALOG.cardDraftTags = {
   "Hooded Blightfang":["synergy"],
   "Howling Banshee":["E"],
   "Hungry Megasloth":["A","synergy"],
-  "Hunter's Edge":["synergy"],
+  "Hunter's Edge":["R","synergy"],
   "Hurska Sweet-Tooth":["A","synergy"],
   "Impeccable Timing":["R"],
   "Incorrigible Youths":["A"],
@@ -750,7 +779,7 @@ CATALOG.cardDraftTags = {
   "Invigorated Rampage":["E","trick"],
   "Invigorating Surge":["synergy"],
   "Ipnu Rivulet":["land","ramp"],
-  "Isareth the Awakener":["R","A","recursion","synergy"],
+  "Isareth the Awakener":["A","recursion","synergy"],
   "Island":["land"],
   "Ivora, Insatiable Heir":["E","draw","synergy"],
   "Ivy Lane Denizen":["synergy"],
@@ -762,7 +791,7 @@ CATALOG.cardDraftTags = {
   "Jungle Delver":["synergy"],
   "Kabira Crossroads":["land","ramp"],
   "Kapsho Kitefins":["R","E","synergy"],
-  "Kargan Intimidator":["E","A"],
+  "Kargan Intimidator":["R","E","A"],
   "Kazandu Nectarpot":["synergy"],
   "Kazandu Stomper":["E"],
   "Keldon Raider":["draw"],
@@ -783,10 +812,10 @@ CATALOG.cardDraftTags = {
   "Leaf-Crowned Visionary":["draw","synergy"],
   "Leonin Scimitar":["synergy"],
   "Leonin Vanguard":["synergy"],
-  "Leonin of the Lost Pride":["R","A"],
+  "Leonin of the Lost Pride":["A"],
   "Light of Hope":["R","synergy"],
   "Light of the Legion":["B","E","synergy"],
-  "Light the Way":["R","synergy"],
+  "Light the Way":["synergy","trick"],
   "Lightwalker":["A"],
   "Liliana, Death's Majesty":["B","R","recursion","tokens"],
   "Llanowar Elves":["ramp"],
@@ -804,8 +833,8 @@ CATALOG.cardDraftTags = {
   "Maraleaf Rider":["A"],
   "Markov Blademaster":["A","synergy"],
   "Markov Enforcer":["B","R","draw","synergy"],
-  "Markov Retribution":["synergy"],
-  "Markov Warlord":["A"],
+  "Markov Retribution":["R","synergy"],
+  "Markov Warlord":["R","A"],
   "Marwyn, the Nurturer":["ramp","synergy"],
   "Masked Blackguard":["A","trick"],
   "Maul of the Skyclaves":["B","synergy"],
@@ -825,7 +854,7 @@ CATALOG.cardDraftTags = {
   "Mirran Bardiche":["tokens","synergy"],
   "Mirrorwing Dragon":["E","synergy"],
   "Moan of the Unhallowed":["recursion","tokens"],
-  "Mogg Flunkies":["R","A"],
+  "Mogg Flunkies":["A"],
   "Moldgraf Millipede":["synergy"],
   "Moment of Craving":["R"],
   "Moment of Heroism":["trick"],
@@ -838,7 +867,7 @@ CATALOG.cardDraftTags = {
   "Morkrut Necropod":["E","synergy"],
   "Mountain":["land"],
   "Mowu, Loyal Companion":["E"],
-  "Mu Yanling, Sky Dancer":["B","R","draw","tokens"],
+  "Mu Yanling, Sky Dancer":["B","draw","tokens"],
   "Murasa Ranger":["synergy"],
   "Murder":["R"],
   "Murmuring Mystic":["tokens","synergy"],
@@ -859,7 +888,7 @@ CATALOG.cardDraftTags = {
   "Night's Whisper":["draw"],
   "Nightveil Sprite":["E","draw","synergy"],
   "Ninja of the Deep Hours":["draw","synergy"],
-  "Nullpriest of Oblivion":["R","E","A","recursion"],
+  "Nullpriest of Oblivion":["E","A","recursion"],
   "Nykthos Paragon":["B","synergy"],
   "Nyx-Fleece Ram":["synergy"],
   "Obstinate Baloth":["synergy"],
@@ -874,7 +903,7 @@ CATALOG.cardDraftTags = {
   "Organ Hoarder":["draw"],
   "Ornithopter of Paradise":["E","ramp","synergy"],
   "Orochi Merge-Keeper":["ramp"],
-  "Outflank":["synergy"],
+  "Outflank":["R","synergy"],
   "Overcome":["E","synergy"],
   "Overflowing Insight":["draw"],
   "Overwhelm":["synergy"],
@@ -905,7 +934,7 @@ CATALOG.cardDraftTags = {
   "Powerstone Fracture":["R"],
   "Predator's Strike":["E","trick"],
   "Pridemalkin":["A","synergy"],
-  "Priest of Forgotten Gods":["draw","ramp"],
+  "Priest of Forgotten Gods":["R","draw","ramp"],
   "Priest of Gix":["A","ramp"],
   "Primeval Bounty":["B","tokens","synergy"],
   "Primeval Herald":["E","ramp","synergy"],
@@ -933,8 +962,8 @@ CATALOG.cardDraftTags = {
   "Relic Axe":["synergy"],
   "Relief Captain":["synergy"],
   "Remand":["R","draw"],
-  "Renegade Tactics":["draw"],
-  "Repel the Darkness":["draw"],
+  "Renegade Tactics":["R","draw"],
+  "Repel the Darkness":["R","draw"],
   "Resistance Reunited":["trick","synergy"],
   "Resistance Skywarden":["E"],
   "Retreat to Kazandu":["synergy"],
@@ -945,12 +974,12 @@ CATALOG.cardDraftTags = {
   "Righteous Valkyrie":["B","E","A","synergy"],
   "Rionya, Fire Dancer":["tokens"],
   "Rishkar, Peema Renegade":["A","ramp","synergy"],
-  "Rodolf Duskbringer":["B","R","E","recursion","synergy"],
+  "Rodolf Duskbringer":["B","E","recursion","synergy"],
   "Roil Eruption":["R"],
   "Ronom Unicorn":["R","A"],
   "Run Ashore":["R"],
   "Ruthless Knave":["A","draw","ramp"],
-  "Ruthless Technomancer":["R","ramp","recursion"],
+  "Ruthless Technomancer":["ramp","recursion"],
   "Sai, Master Thopterist":["draw","tokens","synergy"],
   "Sanctum Seeker":["synergy"],
   "Sandsteppe Outcast":["A","tokens","synergy"],
@@ -1029,7 +1058,7 @@ CATALOG.cardDraftTags = {
   "Starnheim Memento":["E","ramp","synergy"],
   "Steadfast Sentry":["A","synergy"],
   "Steadfast Unicorn":["synergy"],
-  "Stinging Lionfish":["A","synergy"],
+  "Stinging Lionfish":["R","A","synergy"],
   "Stitched Drake":["E","A","recursion"],
   "Stolen Vitality":["E","trick"],
   "Stolen by the Fae":["R","tokens"],
@@ -1058,7 +1087,7 @@ CATALOG.cardDraftTags = {
   "Tenacity":["trick","synergy"],
   "Terramorphic Expanse":["land","ramp"],
   "Territorial Scythecat":["E","A","synergy"],
-  "Tethmos High Priest":["R","A","recursion","synergy"],
+  "Tethmos High Priest":["A","recursion","synergy"],
   "Thieves' Guild Enforcer":["trick","synergy"],
   "Thieves' Tools":["E","ramp","synergy"],
   "Thirsting Bloodlord":["synergy"],
@@ -1083,7 +1112,7 @@ CATALOG.cardDraftTags = {
   "Tireless Tracker":["B","A","draw","synergy"],
   "Titan's Strength":["draw","trick"],
   "Tolarian Kraken":["R","draw","synergy"],
-  "Topiary Stomper":["R","A","ramp"],
+  "Topiary Stomper":["A","ramp"],
   "Torment of Scarabs":["synergy"],
   "Tough Cookie":["A","synergy"],
   "Towering-Wave Mystic":["A","synergy"],
@@ -1104,14 +1133,14 @@ CATALOG.cardDraftTags = {
   "Ulvenwald Mysteries":["draw","tokens","synergy"],
   "Uncaged Fury":["trick"],
   "Uncomfortable Chill":["draw"],
-  "Undead Butler":["R","recursion"],
+  "Undead Butler":["recursion"],
   "Undercellar Myconid":["ramp","tokens","synergy"],
   "Undercity Scrounger":["ramp","synergy"],
   "Undergrowth Champion":["A","synergy"],
   "Undersea Invader":["D"],
   "Universal Solvent":["R","synergy"],
   "Unleash Fury":["trick"],
-  "Unstoppable Ogre":["A","synergy"],
+  "Unstoppable Ogre":["R","A","synergy"],
   "Urdnan, Dromoka Warrior":["synergy"],
   "Urge to Feed":["R","synergy"],
   "Valkyrie Harbinger":["B","E","tokens"],
@@ -1134,8 +1163,8 @@ CATALOG.cardDraftTags = {
   "Virus Beetle":["synergy"],
   "Vito, Thorn of the Dusk Rose":["synergy"],
   "Voice of the Woods":["tokens"],
-  "Voldaren Ambusher":["A"],
-  "Voldaren Duelist":["A"],
+  "Voldaren Ambusher":["R","A"],
+  "Voldaren Duelist":["R","A"],
   "Voldaren Epicure":["draw"],
   "Volley Veteran":["R"],
   "Voracious Greatshark":["R"],
@@ -1143,7 +1172,7 @@ CATALOG.cardDraftTags = {
   "Wailing Ghoul":["synergy"],
   "Wakedancer":["A","tokens"],
   "Waker of Waves":["draw"],
-  "Wall of Lost Thoughts":["R"],
+  "Wall of Lost Thoughts":["synergy"],
   "Warbriar Blessing":["R","synergy"],
   "Warden of Evos Isle":["E","A","ramp"],
   "Waterkin Shaman":["A","synergy"],
@@ -1169,8 +1198,8 @@ CATALOG.cardDraftTags = {
   "Young Pyromancer":["A","tokens","synergy"],
   "Youthful Valkyrie":["E","synergy"],
   "Zada, Hedron Grinder":["synergy"],
-  "Zealot of the God-Pharaoh":["A"],
-  "Zealous Conscripts":["B","A"]
+  "Zealot of the God-Pharaoh":["R","A"],
+  "Zealous Conscripts":["B","R","A"]
 };
 
 // src/core.js
@@ -1811,7 +1840,7 @@ const modalRoot=document.getElementById('modal-root');
 const e=escapeHTML;
 let collection=emptyCollection(), storageError='', recoveryRaw=null;
 try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){try{collection=validateBackup(JSON.parse(raw),idx);}catch(error){recoveryRaw=raw;storageError=`Your saved data could not be read: ${error.message} Open Settings to recover it before making changes.`;}}}catch{storageError='Browser storage is unavailable. Changes will last only for this session; export a backup before closing.';}
-const ui={showDetails:false,view:'explore',mobileOpen:false,mode:'shelves',colors:[],packFilter:'all',packType:'',themeQuery:'',zoom:1,expanded:null,showLands:false,showMissing:false,packCardFilter:'all',playCardFilter:'all',draftFilters:{pack:[],play:[],inventory:[]},showDraftDetails:false,
+const ui={showPairAnalysis:false,showDetails:false,view:'explore',mobileOpen:false,mode:'shelves',colors:[],packFilter:'all',packType:'',themeQuery:'',zoom:1,expanded:null,showLands:false,showMissing:false,packCardFilter:'all',playCardFilter:'all',draftFilters:{pack:[],play:[],inventory:[]},showDraftDetails:false,
   search:'',cardPage:1,cardSort:'name',showPrintings:false,cardFilters:emptyCardFilters(),searchHits:null,searchStatus:'local',searchError:'',
   collectionTab:'matches',inventoryQuery:'',inventoryFilter:'owned',collectionType:'',inventoryPage:1,matchFilter:'all',matchLimit:24,shareMatchCards:false,
   pair:[],pairQuery:'',pairColor:'all',pairType:'',pairAvailability:'all',includeIdentical:true,pairPage:1,showPairList:false,savedQuery:'',savedFilter:'all',savedType:'',
@@ -1888,7 +1917,7 @@ function cardPicture(card,quantity=1,{button=true,eager=false,printing=null}={})
 // Card draft roles are separate from the catalog's theme tags.
 const DRAFT_ROLES={
  B:['B · Bomb','High-impact threat or engine; depends on the deck.'],
- R:['R · Removal','Removal, combat interaction, bounce or countermagic.'],
+ R:['R · Removal','Removes or disables opposing threats: destruction, damage, counters, hostile bounce, tapping or blocking restrictions. Not recursion or power-only reduction.'],
  E:['E · Evasion','Flying, menace, trample or another way through blockers.'],
  A:['A · Aggro','Early pressure or an aggressive combat ability.'],
  D:['D · Situational','Filler or a narrow role; can improve with synergy.'],
@@ -2174,7 +2203,7 @@ function builderHTML(){
   const complete=completePair(ui.pair),ds=[0,1].map(n=>idx.decks.get(ui.pair[n])),cov=complete?coverageForPair(ui.pair):null,entries=ds.filter(Boolean).flatMap(d=>d.cards),landCount=entries.filter(c=>c.isLand).reduce((n,c)=>n+c.quantity,0);
   const nonlands=entries.filter(c=>!c.isLand),allMeta=nonlands.length>0&&nonlands.every(c=>idx.cards.get(normalizeName(c.name)).metadata),curve=Array(8).fill(0);let manaSum=0,spellCount=0;
   for(const c of nonlands){const mv=idx.cards.get(normalizeName(c.name)).manaValue;if(mv!=null){curve[Math.min(7,mv)]+=c.quantity;manaSum+=mv*c.quantity;spellCount+=c.quantity;}}
-  return `<section class="mix-builder" aria-label="Your two-pack builder"><div class="compact-heading"><h2>Choose two packs</h2><button class="btn btn-secondary" data-action="random">${icon('shuffle')}Surprise me</button></div><div class="pair-slots">${ds.map((d,slot)=>`${slot===1?`<span class="pair-plus" aria-hidden="true">${icon('plus')}</span>`:''}<div class="pair-slot ${d?'filled':''}">${d?`<div class="slot-art">${artHTML(idx.cards.get(normalizeName(d.cards[0].name)),d.color)}</div><div class="slot-copy"><small>Pack ${slot+1} ${mana(d.color)} · v${d.variant}</small><h3><button class="text-button slot-title" data-action="reveal-pack" data-id="${d.id}">${e(d.name)}</button></h3><div class="row gap-sm wrap"><button class="text-button" data-action="choose-slot" data-slot="${slot}">Change</button><button class="text-button" data-action="shuffle-slot" data-slot="${slot}" aria-label="Shuffle pack ${slot+1}">${icon('shuffle')}Shuffle</button></div></div><button class="icon-button ghost remove-slot" data-action="remove-pair" data-slot="${slot}" aria-label="Remove ${e(d.name)}">${icon('x')}</button>`:`<div class="empty-slot"><strong>Pack ${slot+1}</strong><div class="row gap-sm wrap"><button class="btn btn-secondary" data-action="choose-slot" data-slot="${slot}">${icon('plus')}Add pack</button><button class="btn btn-secondary" data-action="shuffle-slot" data-slot="${slot}" aria-label="Shuffle pack ${slot+1}">${icon('shuffle')}Shuffle</button></div></div>`}</div>`).join('')}</div>${complete?`<div class="mix-actions"><span class="mix-availability">${badgeHTML(isPairConfirmed(ui.pair)?'owned':cov.complete?'complete':'partial',isPairConfirmed(ui.pair)?'Confirmed pair':cov.complete?'All cards available':`${cov.missingCount} required copies missing`)}</span><button class="btn btn-secondary" data-action="test-hands" data-pair="${ui.pair.join(',')}">${icon('cards')}Test hand</button><button class="btn btn-primary" data-action="save-pair">${icon('bookmark')}Save deck</button>${moreMenuHTML('mix',`<button class="text-button" data-action="open-play-deck" data-pair="${ui.pair.join(',')}">View all 40 cards</button><button class="text-button" data-action="copy-pair">Copy card list</button><button class="text-button" data-action="share-pair">Copy share link</button><button class="text-button" data-action="toggle-pair-list">${ui.showPairList?'Hide':'Show'} list here</button><button class="text-button" data-action="copy-missing-pair">Copy missing cards</button>`)}</div>${ui.showDetails?`<div class="page-summary"><span><strong>40</strong> cards</span><span><strong>${40-landCount}</strong> nonlands</span><span><strong>${landCount}</strong> lands</span><span><strong>${allMeta?(manaSum/spellCount).toFixed(1):'—'}</strong> avg. mana</span></div><p class="form-hint">${collection.settings.includeBasics?'Basic lands required.':'Basic lands assumed available.'} Shared cards need a copy for each half. Cards reserved in other pack versions are unavailable.</p>`:''}${ui.showPairList?`<div class="builder-list">${allMeta?`<div class="mana-curve" aria-label="Nonland mana curve">${curve.map((n,i)=>`<div><div class="curve-bar" style="height:${Math.max(2,n/Math.max(1,...curve)*65)}px"></div><span>${i===7?'7+':i}</span><small>${n}</small></div>`).join('')}</div>`:''}<div class="deck-columns">${ds.map(deckListHTML).join('')}</div>${cov.missingCount?`<p class="notice">Missing: ${cov.missing.map(c=>`${c.quantity} × ${e(idx.cards.get(c.key).name)}`).join(' · ')}</p>`:''}</div>`:''}`:'<p class="form-hint">Two 20-card packs make a play deck. Identical versions are welcome.</p>'}</section>`;
+  return `<section class="mix-builder" aria-label="Your two-pack builder"><div class="compact-heading"><h2>Choose two packs</h2><button class="btn btn-secondary" data-action="random">${icon('shuffle')}Surprise me</button></div><div class="pair-slots">${ds.map((d,slot)=>`${slot===1?`<span class="pair-plus" aria-hidden="true">${icon('plus')}</span>`:''}<div class="pair-slot ${d?'filled':''}">${d?`<div class="slot-art">${artHTML(idx.cards.get(normalizeName(d.cards[0].name)),d.color)}</div><div class="slot-copy"><small>Pack ${slot+1} ${mana(d.color)} · v${d.variant}</small><h3><button class="text-button slot-title" data-action="reveal-pack" data-id="${d.id}">${e(d.name)}</button></h3><div class="row gap-sm wrap"><button class="text-button" data-action="choose-slot" data-slot="${slot}">Change</button><button class="text-button" data-action="shuffle-slot" data-slot="${slot}" aria-label="Shuffle pack ${slot+1}">${icon('shuffle')}Shuffle</button></div></div><button class="icon-button ghost remove-slot" data-action="remove-pair" data-slot="${slot}" aria-label="Remove ${e(d.name)}">${icon('x')}</button>`:`<div class="empty-slot"><strong>Pack ${slot+1}</strong><div class="row gap-sm wrap"><button class="btn btn-secondary" data-action="choose-slot" data-slot="${slot}">${icon('plus')}Add pack</button><button class="btn btn-secondary" data-action="shuffle-slot" data-slot="${slot}" aria-label="Shuffle pack ${slot+1}">${icon('shuffle')}Shuffle</button></div></div>`}</div>`).join('')}</div>${complete?`<div class="mix-actions"><span class="mix-availability">${badgeHTML(isPairConfirmed(ui.pair)?'owned':cov.complete?'complete':'partial',isPairConfirmed(ui.pair)?'Confirmed pair':cov.complete?'All cards available':`${cov.missingCount} required copies missing`)}</span><button class="btn btn-secondary" data-action="test-hands" data-pair="${ui.pair.join(',')}">${icon('cards')}Test hand</button><button class="btn btn-primary" data-action="save-pair">${icon('bookmark')}Save deck</button>${moreMenuHTML('mix',`<button class="text-button" data-action="open-play-deck" data-pair="${ui.pair.join(',')}">View all 40 cards</button><button class="text-button" data-action="copy-pair">Copy card list</button><button class="text-button" data-action="share-pair">Copy share link</button><button class="text-button" data-action="toggle-pair-list">${ui.showPairList?'Hide':'Show'} list here</button><button class="text-button" data-action="copy-missing-pair">Copy missing cards</button>`)}</div>${ui.showDetails?`<div class="page-summary"><span><strong>40</strong> cards</span><span><strong>${40-landCount}</strong> nonlands</span><span><strong>${landCount}</strong> lands</span><span><strong>${allMeta?(manaSum/spellCount).toFixed(1):'—'}</strong> avg. mana</span></div><p class="form-hint">${collection.settings.includeBasics?'Basic lands required.':'Basic lands assumed available.'} Shared cards need a copy for each half. Cards reserved in other pack versions are unavailable.</p>`:''}${ui.showPairList?`<div class="builder-list">${allMeta?`<div class="mana-curve" aria-label="Nonland mana curve">${curve.map((n,i)=>`<div><div class="curve-bar" style="height:${Math.max(2,n/Math.max(1,...curve)*65)}px"></div><span>${i===7?'7+':i}</span><small>${n}</small></div>`).join('')}</div>`:''}<div class="deck-columns">${ds.map(deckListHTML).join('')}</div>${cov.missingCount?`<p class="notice">Missing: ${cov.missing.map(c=>`${c.quantity} × ${e(idx.cards.get(c.key).name)}`).join(' · ')}</p>`:''}</div>`:''}`:'<p class="form-hint">Two 20-card packs make a play deck. Identical versions are welcome.</p>'}<div class="analysis-toolbar"><button class="btn btn-secondary" id="toggle-pair-analysis" data-action="toggle-pair-analysis" aria-expanded="${ui.showPairAnalysis}" aria-controls="mix-analysis">${icon('compare')}${ui.showPairAnalysis?'Hide analysis':'Analysis'}</button></div>${ui.showPairAnalysis?`<div id="mix-analysis">${ds.some(Boolean)?deckAnalysisHTML([...ds.flatMap((d,i)=>d?[{label:`Pack ${i+1} · ${d.name} v${d.variant}`,decks:[d]}]:[]),...(complete?[{label:'Combined · 40 cards',decks:ds}]:[])],{kind:'mix'}):'<p class="form-hint">Choose a pack to see its analysis. Add a second to compare both halves and the combined deck.</p>'}</div>`:''}</section>`;
 }
 function pairingsHTML(){
   const pairs=filteredPairs();ui.pairPage=Math.min(ui.pairPage,Math.ceil(pairs.length/30)||1);const selected=ui.pair.filter(Boolean),count=Number(ui.pairColor!=='all')+Number(!!ui.pairType)+Number(ui.pairAvailability!=='all')+Number(!ui.includeIdentical);
@@ -2314,7 +2343,71 @@ function columnMappingHTML(m){const labels={name:'Card name',quantity:'Quantity'
 function importDialogHTML(){const m=ui.import||{};let body='';let foot='';if(!m.parsed){body=`<div class="import-step"><span>01</span>Bring your cards along</div><label class="import-drop" id="csv-drop" tabindex="0" role="button" aria-label="Choose a collection CSV file"><input id="csv-file" type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values" hidden>${icon('upload')}<strong>Drop your CSV here</strong><span>or click to choose a file</span><small>CSV or TSV · up to 10 MB · 50,000 rows</small></label>${m.error?`<p class="notice warning" role="alert">${e(m.error)}</p>`:''}<div class="import-info"><p><strong>Mythic Tools CSV exports</strong> are supported, including Card Name, Quantity, Set Code, Collector Number, Scryfall ID, and container columns. A simple <strong>Name</strong> / <strong>Quantity</strong> file also works. We also recognize common set, collector-number, and Scryfall-ID columns. Column mapping is adjustable before import. Foil, condition, price, and finish rows are combined by card name, not discarded.</p><p>An optional <strong>Pack</strong> column can identify separate physical boosters. Ambiguous or incomplete groups are never silently confirmed.</p></div><div class="notice subtle">${icon('lock')}Your CSV stays in this browser. It is parsed locally, never uploaded to a server.</div><div class="row between wrap"><button class="text-button" data-action="csv-template">${icon('download')}Download a CSV template</button><button class="text-button" data-action="sample-import">Preview an example collection ${icon('arrow')}</button></div>`;foot='<button class="btn btn-secondary" data-action="close-modal">Cancel</button>';}
  else {const r=m.result;const allocationConflict=r&&m.mode==='replace'?coverage(derived.reserved,r.inventory).missingCount:0;body=`<div class="import-step"><span>02</span>Check your matches before importing</div><div class="file-summary">${icon('file')}<div><strong>${e(m.fileName)}</strong><small>${e(detectCSVFormat(m.parsed.headers))} · ${m.parsed.rows.length.toLocaleString()} source rows · ${m.parsed.delimiter==='\t'?'tab':m.parsed.delimiter===';'?'semicolon':'comma'} separated${m.demo?' · EXAMPLE DATA, not your actual collection':''}</small></div><button class="text-button" data-action="restart-import">Choose another file</button></div><details class="native-details" ${m.error?'open':''}><summary>Review column mapping</summary>${columnMappingHTML(m)}</details><label class="toggle-label" style="margin:16px 0"><input id="import-j25-only" type="checkbox" ${m.j25Only?'checked':''}>Only accept rows explicitly marked J25, or with a blank set</label>${m.error?`<p class="notice warning" role="alert">${e(m.error)}</p>`:''}${r?`<div class="import-summary"><div><strong>${r.total.toLocaleString()}</strong><span>Card copies</span></div><div><strong>${r.distinct}</strong><span>Unique names</span></div><div><strong>${r.acceptedRows}</strong><span>Accepted rows</span></div><div><strong>${r.issues.length}</strong><span>Rows to review</span></div></div><p class="form-hint">Matches are by card name, across interchangeable printings. Quantities add together. ${collection.settings.includeBasics?'Basic land quantities are required.':'Basic lands are assumed available when matching packs.'} Collector numbers and Scryfall IDs require loaded card data.</p><div class="import-mode"><label><input type="radio" name="import-mode" value="replace" ${m.mode==='replace'?'checked':''}><span><strong>Replace card inventory</strong><small>Replaces quantities while keeping confirmed pack assignments. Saved recipes and stars remain.</small></span></label><label><input type="radio" name="import-mode" value="add" ${m.mode==='add'?'checked':''}><span><strong>Add these card copies</strong><small>Adds to existing quantities. Importing the same file twice will double its cards.</small></span></label></div>${m.mode==='replace'&&derived.owned?`<div class="notice ${allocationConflict&&!m.resetAllocations?'warning':'subtle'}"><div><strong>Keep your exact confirmed versions</strong><p>${allocationConflict?`${allocationConflict} reserved card copies are absent from this replacement. Add the missing copies to the CSV, use Add mode, or explicitly release your pack assignments below.`:'All confirmed pack assignments fit this replacement and will be retained.'}</p><label class="toggle-label"><input id="reset-pack-allocations" type="checkbox" ${m.resetAllocations?'checked':''}>Release all ${derived.owned} confirmed packs and re-match from scratch</label></div></div>`:''}${r.groupMatches.length?`<div class="results-bar"><h3>Pack / container groups</h3>${layoutToggle('importGroups','Imported group layout')}</div><p class="form-hint">A binder, deck, or container is not automatically a physical booster. Confirm only groups you know represent separate, complete 20-card packs.</p><div class="import-preview-matches layout-${ui.layouts.importGroups}" data-shelf="import-groups">${r.groupMatches.slice(0,12).map(g=>`<div class="row between"><span>${e(g.name)}</span><span>${g.exact.length===1?`${e(idx.decks.get(g.exact[0]).name)} v${idx.decks.get(g.exact[0]).variant} ${badgeHTML('complete','Exact list')}`:g.exact.length>1?badgeHTML('partial',`${g.exact.length} possible versions`):badgeHTML('neutral','Incomplete / no exact match')}</span></div>`).join('')}${r.groupMatches.length>12?`<p class="faint">+ ${r.groupMatches.length-12} more groups</p>`:''}</div>${r.groupMatches.some(g=>g.exact.length===1)?`<label class="toggle-label" style="margin:16px 0"><input id="confirm-groups" type="checkbox" ${m.confirmGroups?'checked':''}>I confirm the ${r.groupMatches.filter(g=>g.exact.length===1).length} uniquely matched groups represent separate packs I own.</label>`:''}`:`<div class="notice subtle">${icon('info')}Without a Pack column, we show ranked variant candidates after import. You decide which packs to confirm; shared cards will not be counted twice.</div>`}${r.issues.length?`<details class="native-details" open><summary>${r.issues.length} rows will be excluded</summary><div class="issues-table">${r.issues.slice(0,25).map(issue=>`<div class="issue-row"><span class="mono faint">Row ${issue.row}</span><strong>${e(issue.name||'Unnamed')}</strong><span>${e(issue.message)}</span></div>`).join('')}</div>${r.issues.length>25?`<p class="muted">Showing the first 25 issues.</p>`:''}<button class="text-button" data-action="export-issues">${icon('download')}Download full issue report</button></details><label class="toggle-label" style="margin-top:16px"><input id="skip-issues" type="checkbox" ${m.skipIssues?'checked':''}>I reviewed the exclusions. Import only the accepted rows.</label>`:''}`:''}`;foot=`<button class="btn btn-secondary" data-action="close-modal">Cancel</button><button class="btn btn-primary" data-action="apply-import" ${!r||!r.total||r.issues.length&&!m.skipIssues||allocationConflict>0&&!m.resetAllocations?'disabled':''}>${icon('check')}${m.demo?'Import example data':m.mode==='add'?'Add to collection':'Replace inventory'}</button>`;}
  return dialogFrame('Import your collection',body,foot,'wide');}
-function compareDialogHTML(m){const t=idx.themes.get(m.theme),ds=t.variants.map(id=>idx.decks.get(id)),maps=ds.map(d=>requirements([d],true));const keys=[...new Set(ds.flatMap(d=>d.cards.filter(c=>!c.isLand).map(c=>normalizeName(c.name))))];const common=keys.filter(k=>maps.every(x=>(x[k]||0)>0));const differences=keys.filter(k=>!maps.every(x=>x[k]===maps[0][k]));return dialogFrame(`${t.name} · compare versions`,`<p class="muted">Compare nonland cards across published variants. Shared cards establish the theme; the differences help identify the exact version.</p><div class="notice subtle"><div><strong>${common.length} shared nonland names</strong><p>${common.map(k=>`<button class="text-button" data-action="card" data-key="${e(k)}">${e(idx.cards.get(k).name)}</button>`).join(' · ')}</p></div></div><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>Different cards</th>${ds.map(d=>`<th><button class="text-button" data-action="reveal-pack" data-id="${d.id}">Version ${d.variant}</button></th>`).join('')}</tr></thead><tbody>${differences.map(k=>`<tr><td><button class="text-button" data-action="card" data-key="${e(k)}">${e(idx.cards.get(k).name)}</button></td>${maps.map(x=>`<td class="mono">${x[k]||'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="form-hint">All variants contain 20 cards. Land differences are visible in each expanded pack with “Show lands.”</p>`,'','wide');}
+// BEGIN DECK COMPARISON
+// Full published lists, independent of filters, ownership and displayed lands.
+function deckAnalysis(decks,index=idx){
+  const result={total:0,lands:0,nonlands:0,creatures:0,otherSpells:0,unknownTypes:0,knownMana:0,unknownMana:0,manaSum:0,averageMana:null,curve:Array(8).fill(0),roles:Object.fromEntries(Object.keys(DRAFT_ROLES).map(role=>[role,0])),tags:[]};
+  for(const deck of decks.filter(Boolean)){
+    for(const tag of index.themes.get(deck.themeId)?.tags||[])if(!result.tags.includes(tag))result.tags.push(tag);
+    for(const entry of deck.cards){
+      const quantity=entry.quantity??1,card=index.cards.get(normalizeName(entry.name));
+      result.total+=quantity;
+      for(const role of cardDraftTags(entry))result.roles[role]=(result.roles[role]||0)+quantity;
+      if(entry.isLand){result.lands+=quantity;continue;}
+      result.nonlands+=quantity;
+      if(card?.metadata&&card.type){if(/\bCreature\b/.test(card.type))result.creatures+=quantity;else result.otherSpells+=quantity;}
+      else result.unknownTypes+=quantity;
+      const mv=card?.manaValue;
+      if(typeof mv==='number'&&Number.isFinite(mv)&&mv>=0){
+        result.knownMana+=quantity;result.manaSum+=mv*quantity;result.curve[Math.min(7,Math.floor(mv))]+=quantity;
+      }else result.unknownMana+=quantity;
+    }
+  }
+  result.averageMana=result.knownMana?result.manaSum/result.knownMana:null;
+  return result;
+}
+function deckAnalysisHTML(series,{kind='versions'}={}){
+  const items=series.filter(item=>item.decks.some(Boolean)).map(item=>({...item,analysis:deckAnalysis(item.decks)}));
+  if(!items.length)return '<div class="deck-analysis"><p class="analysis-note">Choose a pack to see its analysis.</p></div>';
+  const head=`<thead><tr><th scope="col">Measure</th>${items.map(item=>`<th scope="col">${e(item.label)}</th>`).join('')}</tr></thead>`;
+  const table=(caption,rows,extra='')=>`<div class="analysis-scroll" id="analysis-${kind}-${caption.toLowerCase().replace(/[^a-z0-9]+/g,'-')}" data-shelf="analysis-${kind}-${caption.toLowerCase().replace(/[^a-z0-9]+/g,'-')}" role="region" aria-label="${e(caption)}" tabindex="0"><table class="analysis-table" style="--analysis-min-width:${items.length===1?0:Math.max(420,140+items.length*120)}px"><caption>${e(caption)}</caption>${head}<tbody>${rows}</tbody></table></div>${extra}`;
+  const row=(label,values)=>`<tr><th scope="row">${e(label)}</th>${values.map(value=>`<td>${value}</td>`).join('')}</tr>`;
+  const number=(value)=>`<span class="analysis-number">${value}</span>`;
+  const values=(fn)=>items.map(item=>fn(item.analysis));
+  const stats=table('Deck statistics',[
+    row('Cards',values(a=>number(a.total))),row('Lands',values(a=>number(a.lands))),row('Nonlands',values(a=>number(a.nonlands))),
+    row('Creatures',values(a=>`${number(a.creatures)}${a.unknownTypes?'<small>known</small>':''}`)),
+    row('Other nonlands',values(a=>`${number(a.otherSpells)}${a.unknownTypes?'<small>known</small>':''}`)),
+    row('Unknown card types',values(a=>number(a.unknownTypes))),
+    row('Avg. nonland mana',values(a=>`${number(a.averageMana===null?'—':a.averageMana.toFixed(2))}<small>${a.knownMana}/${a.nonlands} copies known</small>`))
+  ].join(''));
+  // Each chart uses one scale across all its measures and compared series.
+  const bars=(caption,measures,read,extra='')=>{
+    const maximum=Math.max(1,...measures.flatMap(measure=>items.map(item=>read(item.analysis,measure.key))));
+    return table(caption,measures.map(measure=>row(measure.label,items.map(item=>{const count=read(item.analysis,measure.key);return `<span class="analysis-bar-cell"><span class="analysis-bar-track" aria-hidden="true"><i style="width:${count/maximum*100}%"></i></span>${number(count)}</span>`;}))).join(''),extra);
+  };
+  const anyMana=items.some(item=>item.analysis.knownMana);
+  const mana=anyMana?bars('Nonland mana curve',Array.from({length:8},(_,key)=>({key,label:key===7?'7+':String(key)})),(a,key)=>a.curve[key],`<p class="analysis-note">${items.some(item=>item.analysis.unknownMana)?'Known mana values only; missing copies are excluded from the bars. ':''}Mana value uses X = 0. All bars share one scale.</p>`):'<section class="analysis-empty"><h3>Nonland mana curve</h3><p>Mana data is unavailable. Load card data to see the curve.</p><button class="text-button" data-action="sync">Load card data</button></section>';
+  const unknownMana=table('Mana data coverage',row('Unknown mana values',values(a=>number(a.unknownMana))));
+  const bread=bars('BREAD assignments',['B','R','E','A','D'].map(key=>({key,label:DRAFT_ROLES[key][0]})),(a,key)=>a.roles[key]||0,'<p class="analysis-note">Counts card copies in the full list. A card can contribute to multiple roles; these are draft aids, not ratings of deck strength.</p>');
+  const support=bars('Supporting roles',['draw','ramp','trick','recursion','tokens','synergy'].map(key=>({key,label:DRAFT_ROLES[key][0]})),(a,key)=>a.roles[key]||0);
+  const tags=[...new Set(items.flatMap(item=>item.analysis.tags))];
+  let tagNote='Versions of the same theme share its tags. Supporting-role counts above show differences in their cards.';
+  if(kind==='mix'){
+    const combined=items.find(item=>item.decks.filter(Boolean).length===2);
+    if(combined){
+      const pair=combined.decks.filter(Boolean).map(deck=>deck.id),syn=pairSynergy(pair),ds=combined.decks.filter(Boolean);
+      const colorBonus=ds[0].color===ds[1].color?2:ds.every(deck=>deck.color!=='M')?1:0,sameTheme=ds[0].themeId===ds[1].themeId?1:0;
+      tagNote=`${syn.score} tag synergy: ${syn.shared.length} shared ${syn.shared.length===1?'tag':'tags'} × 4 + ${colorBonus} color bonus${sameTheme?' + 1 same-theme bonus':''}. This is the existing pairing heuristic, not a winrate. Combined counts include both halves.`;
+    }else tagNote='Choose a second pack to compare shared theme tags and the combined deck.';
+  }
+  const tagTable=tags.length?table('Theme tags',tags.map(tag=>row(tag,items.map(item=>item.analysis.tags.includes(tag)?'<span class="analysis-tag-present">Yes</span>':'<span class="analysis-tag-absent">No</span>'))).join('')):'<h3>Theme tags</h3><p class="analysis-note">No theme tags are available.</p>';
+  return `<section class="deck-analysis" aria-label="${kind==='mix'?'Mix':'Version'} analysis"><p class="analysis-intro">Full published lists · counts include every copy</p>${items.length>1?'<p class="analysis-scroll-hint">Swipe or scroll tables sideways to compare.</p>':''}${stats}${mana}${unknownMana}${bread}${support}${tagTable}<p class="analysis-note">${e(tagNote)}</p></section>`;
+}
+
+// END DECK COMPARISON
+
+function compareDialogHTML(m){const t=idx.themes.get(m.theme),ds=t.variants.map(id=>idx.decks.get(id)),maps=ds.map(d=>requirements([d],true));const keys=[...new Set(ds.flatMap(d=>d.cards.filter(c=>!c.isLand).map(c=>normalizeName(c.name))))];const common=keys.filter(k=>maps.every(x=>(x[k]||0)>0));const differences=keys.filter(k=>!maps.every(x=>x[k]===maps[0][k]));const controls=`<div class="segmented analysis-switch" role="group" aria-label="Version comparison view">${[['cards','Cards'],['analysis','Analysis']].map(([mode,label])=>`<button id="comparison-mode-${mode}" data-action="comparison-mode" data-mode="${mode}" aria-pressed="${!!m.analysis===(mode==='analysis')}" class="${!!m.analysis===(mode==='analysis')?'active':''}">${label}</button>`).join('')}</div>`;return dialogFrame(`${t.name} · compare versions`,controls+(m.analysis?deckAnalysisHTML(ds.map(d=>({label:`Version ${d.variant}`,decks:[d]})),{kind:'versions'}):`<p class="muted">Compare nonland cards across published variants. Shared cards establish the theme; the differences help identify the exact version.</p><div class="notice subtle"><div><strong>${common.length} shared nonland names</strong><p>${common.map(k=>`<button class="text-button" data-action="card" data-key="${e(k)}">${e(idx.cards.get(k).name)}</button>`).join(' · ')}</p></div></div><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>Different cards</th>${ds.map(d=>`<th><button class="text-button" data-action="reveal-pack" data-id="${d.id}">Version ${d.variant}</button></th>`).join('')}</tr></thead><tbody>${differences.map(k=>`<tr><td><button class="text-button" data-action="card" data-key="${e(k)}">${e(idx.cards.get(k).name)}</button></td>${maps.map(x=>`<td class="mono">${x[k]||'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="form-hint">All variants contain 20 cards. Land differences are visible in each expanded pack with “Show lands.”</p>`),'','wide');}
 function saveDialogHTML(m){const saved=m.id?collection.saved.find(s=>s.id===m.id):null;const pair=m.pair||saved?.pair||ui.pair;if(!completePair(pair))return dialogFrame('Choose two packs first','<p>Open the mixing room to finish your pairing.</p>');return dialogFrame(saved?'Edit your play deck':'Keep this combination',`<div class="selected-packs-title">${pair.map(id=>{const d=idx.decks.get(id);return `<span>${mana(d.color)}${e(d.name)} <small>v${d.variant}</small></span>`;}).join('<span>＋</span>')}</div><form id="save-deck-form" class="form-stack"><label class="form-field">Deck name<input id="saved-name" class="input" name="name" maxlength="120" required value="${e(m.draftName??saved?.name??pairTitle(pair))}" placeholder="A memorable name for a magical mix"></label><label class="form-field">Notes<textarea id="saved-notes" name="notes" class="input" rows="4" maxlength="2000" placeholder="Favorite plays, friends you played with, or a little strategy…">${e(m.draftNotes??saved?.notes??'')}</textarea></label><label class="toggle-label"><input type="checkbox" id="saved-favorite" name="favorite" ${m.draftFavorite??saved?.favorite?'checked':''}>Star this deck</label><p class="form-hint">A saved recipe does not change your inventory or reserve extra cards. Wish-list combinations are welcome.</p></form>`,`<button class="btn btn-secondary" data-action="close-modal">Cancel</button><button class="btn btn-primary" type="submit" form="save-deck-form">${icon('bookmark')}${saved?'Save changes':'Save play deck'}</button>`,'small');}
 function pickerHTML(m){const decks=CATALOG.decks.filter(d=>normalizeName(d.name+' v'+d.variant+' '+idx.themes.get(d.themeId).tags.join(' ')).includes(normalizeName(m.query||''))&&themeMatchesType(idx.themes.get(d.themeId),m.packType||'')&&matchesPackOwnership(derived.status.get(d.id),m.ownership||'all'));return dialogFrame(`Choose pack ${(m.slot||0)+1}`,`<div class="search-box">${icon('search')}<input id="picker-search" type="search" placeholder="Find a theme or version…" value="${e(m.query||'')}" aria-label="Search pack variants"></div><div class="results-bar">${typeSelect('picker-type',m.packType||'')}<select id="picker-ownership" class="filter-select" aria-label="Filter picker ownership">${selectOptions([['all','All pack versions'],['owned','Confirmed versions'],['unowned','Unowned versions'],['buildable','Buildable from loose cards']],m.ownership||'all')}</select><span class="faint">${decks.length} versions</span></div><div class="membership-list picker-list">${decks.map(d=>`<button data-action="pick-pack" data-id="${d.id}" data-slot="${m.slot||0}"><span class="row gap-sm">${mana(d.color)}<strong>${e(d.name)}</strong>${rarityMark(idx.themes.get(d.themeId))}<span class="faint">v${d.variant}</span></span>${deckBadge(d)}${icon('plus')}</button>`).join('')||'<p class="muted">No matching variants.</p>'}</div>`,'','small');}
 
@@ -2447,6 +2540,8 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'deck-tokens':{const decks=(button.dataset.decks||'').split(',');if(decks.length&&decks.every(id=>idx.decks.has(id))){showModal('tokens',{decks,items:[],loading:false,error:''},!!ui.modal);loadDeckTokens();}break;}
  case'retry-tokens':loadDeckTokens();break;
  case'card':showCard(button);break;
+ case'comparison-mode':if(ui.modal?.kind==='compare'){ui.modal.analysis=button.dataset.mode==='analysis';renderModal();modalRoot.querySelector(`[data-action="comparison-mode"][data-mode="${button.dataset.mode}"]`)?.focus();}break;
+ case'toggle-pair-analysis':ui.showPairAnalysis=!ui.showPairAnalysis;render();document.querySelector('[data-action="toggle-pair-analysis"]')?.focus();break;
  case'compare':showModal('compare',{theme:button.dataset.theme},!!ui.modal);break;
  case'reveal-pack':revealPack(id,button);break;
  case'toggle-missing':ui.showMissing=!ui.showMissing;render();break;
