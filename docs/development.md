@@ -63,6 +63,10 @@ labels across lists, off by default. This preference is stored as
 always explain the roles. Pack cards default to a grid unless a saved layout
 preference overrides it. Mobile pack and play-deck dialogs use the full viewport.
 
+BREAD summaries below pack and play-deck totals count card copies in the full
+list, independent of filters. Each assigned BREAD role counts, so a card with
+multiple roles contributes to each total. Zero counts remain visible.
+
 At widths 320–600 CSS pixels, card grids and theme grids use two equal columns
 with shrinking tracks rather than a fixed minimum. Horizontal shelves retain
 their layout. At 412 CSS pixels, cards are approximately 180px wide (depending
