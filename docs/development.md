@@ -33,6 +33,32 @@ That matches Foundations Jumpstart theme rarity (4 common, 3 rare, 2 mythic per 
 
 `BUNDLED_CARDS` is empty in this edition. Scryfall fills printings, rules, rarity, and images at runtime (`set:j25`, cached in IndexedDB for 24 hours). Seed art in `CATALOG.seedImages` is first paint only.
 
+## Card draft roles
+
+`CATALOG.cardDraftTags` assigns editorial, name-keyed roles to all 768 unique
+cards in the bundled J25 decklists. The assignments are bundled and available
+offline; Scryfall hydration does not change them. They are independent of theme
+tags and collection ownership. Review assignments against Oracle text when
+changing them; rarity alone is not a Bomb rating.
+
+BREAD labels are Bomb, Removal (including tempo/countermagic), Evasion, Aggro,
+and D / Situational. D is filler or a narrow role, not a claim that a card is
+unplayable. Additional roles cover card advantage/selection, ramp/fixing,
+combat tricks, recursion, creature tokens, synergy/support and lands. A card
+can have multiple roles; these are draft aids, not numeric pick orders.
+
+`cardDraftTags`, `matchesDraftTags`, `draftTagsHTML`, and `draftFilterHTML` are
+shared by the library, pack dialogs, combined deck dialogs and inventory list.
+Checkboxes match **any** selected role (OR), then intersect with search,
+ownership, theme and land visibility filters. No selected roles means all.
+Filters stay in session UI state, independently by context. Library reset also
+clears its draft selections. Icons have text labels and descriptions.
+
+At widths 320–600 CSS pixels, card grids and theme grids use two equal columns
+with shrinking tracks rather than a fixed minimum. Horizontal shelves retain
+their layout. At 412 CSS pixels, cards are approximately 180px wide (depending
+on container padding); below 320px the grid uses one column.
+
 ## Collection storage
 
 Key `jumpstart-atlas.collection.v1` (see `APP_SCHEMA`). Shape:
