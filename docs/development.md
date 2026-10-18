@@ -52,7 +52,16 @@ shared by the library, pack dialogs, combined deck dialogs and inventory list.
 Checkboxes match **any** selected role (OR), then intersect with search,
 ownership, theme and land visibility filters. No selected roles means all.
 Filters stay in session UI state, independently by context. Library reset also
-clears its draft selections. Icons have text labels and descriptions.
+clears its draft selections. Filter panels start collapsed, keep their open state
+per context during the session, and show an active-filter count when closed.
+Ownership and land controls live in those panels alongside the draft roles.
+
+Card images carry only the assigned BREAD letters; cards with only additional
+roles do not receive an invented BREAD rating. “Role details” toggles full text
+labels across lists, off by default. This preference is stored as
+`showDraftDetails` in the existing layout-preferences object. Card-detail dialogs
+always explain the roles. Pack cards default to a grid unless a saved layout
+preference overrides it. Mobile pack and play-deck dialogs use the full viewport.
 
 At widths 320–600 CSS pixels, card grids and theme grids use two equal columns
 with shrinking tracks rather than a fixed minimum. Horizontal shelves retain
