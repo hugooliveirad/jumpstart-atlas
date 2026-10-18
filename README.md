@@ -18,6 +18,7 @@ You can:
 - Mix two halves, shuffle either pack or the whole mix, and save 40-card recipes
 - Sample opening hands and the next three draws for any mix, with previous samples to compare
 - View related tokens and emblems from pack and play-deck dialogs
+- Choose a compact view or turn on more details, with contextual Filters, View and More menus
 - Copy Scryfall decklists (quantity, name, set, collector number) from pack, card, and pairing lists
 - Open card details for J25 printings, Scryfall, and [LigaMagic](https://www.ligamagic.com.br/) links
 
@@ -40,3 +41,5 @@ Nothing is uploaded. Import a CSV from the sidebar, or add copies from a card di
 Agents: start with `AGENTS.md`.
 
 The catalog, tags, rarity rule, storage keys, and Scryfall behavior are documented in [`docs/development.md`](docs/development.md).
+
+See the [feature map](docs/feature-map.md) and [interface design decisions](docs/interface-design.md) for the full feature inventory and UX rationale.

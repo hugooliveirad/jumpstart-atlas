@@ -52,13 +52,14 @@ shared by the library, pack dialogs, combined deck dialogs and inventory list.
 Checkboxes match **any** selected role (OR), then intersect with search,
 ownership, theme and land visibility filters. No selected roles means all.
 Filters stay in session UI state, independently by context. Library reset also
-clears its draft selections. Filter panels start collapsed, keep their open state
-per context during the session, and show an active-filter count when closed.
-Ownership and land controls live in those panels alongside the draft roles.
+clears its draft selections. Filters open in contextual popovers, retain their open state and scroll position
+through rendering, and show an active-filter count on the trigger. Ownership and
+draft roles live in Filters; land visibility, layouts, printing display and role
+descriptions live in View.
 
 Card names have their assigned BREAD letters beside them; artwork stays clear.
 Cards with only additional roles do not receive an invented BREAD rating. Owned
-and unowned cards use green and muted dots, with accessible labels and tooltips. “Role details” toggles full text
+and unowned cards use solid green and hollow muted dots, with accessible labels and tooltips. “Role descriptions” toggles full text
 labels across lists, off by default. This preference is stored as
 `showDraftDetails` in the existing layout-preferences object. Card-detail dialogs
 always explain the roles. Pack cards default to a grid unless a saved layout
@@ -116,6 +117,28 @@ separate states. Copy effects can produce tokens without a listed token card.
 
 `scryfallLine` / `scryfallList` / `deckText` produce `quantity Name (SET) number` lists. Copy buttons call `copyText`. `downloadText` remains for JSON backup, CSV import template, import issues, and unreadable-recovery dumps.
 
+## Interface structure
+
+The five destinations remain Explore, Cards, Collection, Mixing room and Saved.
+Search and primary actions stay visible. **Filters** contains result constraints,
+**View** contains display choices, and **More** contains secondary actions such as
+copy, tokens, backup and pack comparison. These are native auto popovers: Escape,
+light dismissal and keyboard focus return are preserved through UI renders. On
+mobile they become bounded bottom sheets; menus never nest.
+
+**View → More details** controls optional descriptions, theme tags, mix statistics
+and card printing metadata. It defaults off and persists as `showDetails` in the
+existing preferences object, independently from `showDraftDetails`. Availability,
+ownership and BREAD letters remain visible. No collection schema migration occurs.
+
+The mobile navigation drawer scrolls, traps keyboard focus and makes the workspace
+inert until dismissed. Version tabs support arrow keys. Pack-wide navigation and
+collection operations live in the pack's More menu. Card printings and containing
+packs use named disclosures. Errors remain visible until dismissed.
+
+The feature inventory and preservation decisions are in [feature-map.md](feature-map.md).
+The researched Apple HIG rationale is in [interface-design.md](interface-design.md).
+
 ## UI landmarks
 
 - Pack click → `showPack` dialog on every viewport
@@ -142,6 +165,7 @@ npm install --prefix /tmp/jumpstart-atlas-tests --no-save playwright
 /tmp/jumpstart-atlas-tests/node_modules/.bin/playwright install chromium
 # With python3 -m http.server running in another terminal:
 NODE_PATH=/tmp/jumpstart-atlas-tests/node_modules node tests/mixing-room.cjs
+NODE_PATH=/tmp/jumpstart-atlas-tests/node_modules node tests/interface.cjs
 ```
 
 `ATLAS_URL` can override the default `http://127.0.0.1:8000/`. The script uses
@@ -151,3 +175,7 @@ positions after reload, filter constraints, identical halves, sample quantities
 and history, saved recipes, token retry/cache/deduplication, and overflow at 1280,
 412, and 320 CSS pixels. Also verify images and token relationships once with live
 Scryfall data before publishing related changes.
+
+`tests/interface.cjs` covers keyboard drawer and popover behavior, filter focus,
+persisted display settings, empty searches, version tabs, CSV preview/apply/undo,
+saved-hand entry points and keyboard access to backup restore at the same widths.

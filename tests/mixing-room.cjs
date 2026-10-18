@@ -34,6 +34,19 @@ async function until(fn) { for (let i = 0; i < 100; i++) { if (await fn()) retur
       const slots = () => page.locator('.pair-slot');
       const packIds = () => page.locator('.pair-slot [data-action=reveal-pack]').evaluateAll(els => els.map(el => el.dataset.id));
       const action = (name, scope = page) => scope.locator(`[data-action="${name}"]`);
+      // Secondary controls remain testable through their actual visible menu trigger.
+      // Reopen after every render: changing a filter can replace the whole popover.
+      const reveal = async target => {
+        await target.waitFor({ state: 'attached' });
+        const popoverId = await target.evaluate(el => {
+          const popover = el.closest('[popover]');
+          return popover && !popover.matches(':popover-open') ? popover.id : null;
+        });
+        if (popoverId) await page.locator(`[popovertarget="${popoverId}"]:not([popovertargetaction="hide"])`).click();
+        return target;
+      };
+      const click = async (name, scope = page) => (await reveal(action(name, scope))).click();
+      const select = async (selector, value) => (await reveal(page.locator(selector))).selectOption(value);
       const go = async packs => { await page.goto(origin + '#pairings' + (packs === undefined ? '' : '?packs=' + packs)); await slots().first().waitFor(); };
       const checkWidth = async () => assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `No horizontal overflow at ${width}px`);
       await go('stalwart-4,zealots-3');
@@ -52,15 +65,20 @@ async function until(fn) { for (let i = 0; i < 100; i++) { if (await fn()) retur
       await action('remove-pair').last().click(); assert.equal(await slots().nth(1).locator('h3').count(), 0);
       await action('remove-pair').first().click(); assert.deepEqual(await packIds(), []);
       await checkWidth();
+      await action('choose-slot', slots().nth(1)).click(); await page.locator('#picker-search').fill('angels');
+      await action('pick-pack').filter({ hasText: 'Angels' }).first().click();
+      assert.equal(await slots().nth(0).locator('h3').count(), 0, 'Choosing an empty second slot preserves the empty first slot');
+      assert.deepEqual(await packIds(), ['angels-1']);
+      await action('remove-pair', slots().nth(1)).click();
       await action('shuffle-slot', slots().nth(1)).click(); assert.equal(await slots().nth(0).locator('h3').count(), 0); assert.equal(await packIds().then(x => x.length), 1);
       await page.reload(); assert.equal(await slots().nth(0).locator('h3').count(), 0);
       await action('shuffle-slot', slots().nth(0)).click(); assert.equal((await packIds()).length, 2);
       // Pair filters still constrain shuffle, without pinning the current selection.
-      await page.selectOption('#pair-color', 'mono'); await action('random', page.locator('.mix-builder')).click();
+      await select('#pair-color', 'mono'); await action('random', page.locator('.mix-builder')).click();
       const selected = (await packIds()).map(id => catalog.decks.find(d => d.id === id)); assert.equal(selected[0].color, selected[1].color);
-      await page.selectOption('#pair-availability', 'confirmed'); const beforeImpossible = await packIds(); await action('random', page.locator('.mix-builder')).click(); assert.deepEqual(await packIds(), beforeImpossible);
+      await select('#pair-availability', 'confirmed'); const beforeImpossible = await packIds(); await action('random', page.locator('.mix-builder')).click(); assert.deepEqual(await packIds(), beforeImpossible);
       await go('legion-1,legion-1');
-      await page.selectOption('#pair-color', 'all'); await page.selectOption('#pair-availability', 'all');
+      await select('#pair-color', 'all'); await select('#pair-availability', 'all');
       assert.equal(await page.locator('.pair-grid .pair-card').count(), 1, 'Identical halves require both copies in results');
       const beforeStorage = await page.evaluate(() => localStorage.getItem('jumpstart-atlas.collection.v1'));
       await action('test-hands', page.locator('.mix-builder')).click();
@@ -86,19 +104,21 @@ async function until(fn) { for (let i = 0; i < 100; i++) { if (await fn()) retur
       assert.equal(await page.evaluate(() => localStorage.getItem('jumpstart-atlas.collection.v1')), beforeStorage);
       await action('save-pair').click(); await page.locator('#saved-name').fill('Token test mix'); await page.locator('#save-deck-form').evaluate(form => form.requestSubmit());
       await page.goto(origin + '#saved'); await action('test-hands').first().click(); assert.equal((await sampleKeys()).length, 10); await action('close-modal').last().click();
-      await action('load-saved').click();
+      await reveal(action('load-saved'));
+      assert.equal(await page.locator('.dialog').count(), 0, 'Opening a saved card menu must not activate the whole card');
+      await click('load-saved');
       await action('test-hands', page.locator('.dialog')).click(); await page.getByRole('button', { name: 'Back', exact: true }).click();
-      failTokens = true; await action('deck-tokens').click(); await until(() => action('retry-tokens').isVisible());
+      failTokens = true; await click('deck-tokens'); await until(() => action('retry-tokens').isVisible());
       assert.equal(await page.locator('.token-card').count(), 0); failTokens = false; await action('retry-tokens').click(); await page.locator('.token-card').waitFor();
       assert.equal(await page.locator('.token-card').count(), 1, 'Shared token deduplicates across halves and source cards');
       assert.match(await page.locator('.token-card').innerText(), /Raise the Alarm/);
       assert.match(await page.locator('.token-card').innerText(), /Ancestral Blade/);
       assert(await page.locator('.token-card img').getAttribute('alt')); await checkWidth();
-      const requestsAfterLoad = tokenRequests; await page.getByRole('button', { name: 'Back', exact: true }).click(); await action('deck-tokens').click(); await page.locator('.token-card').waitFor(); assert.equal(tokenRequests, requestsAfterLoad, 'Token response cached');
+      const requestsAfterLoad = tokenRequests; await page.getByRole('button', { name: 'Back', exact: true }).click(); await click('deck-tokens'); await page.locator('.token-card').waitFor(); assert.equal(tokenRequests, requestsAfterLoad, 'Token response cached');
       await page.getByRole('button', { name: 'Back', exact: true }).click();
-      await action('reveal-pack', page.locator('.selected-packs-title')).first().click(); await action('deck-tokens').click(); await page.locator('.token-card').waitFor();
+      await action('reveal-pack', page.locator('.selected-packs-title')).first().click(); await click('deck-tokens'); await page.locator('.token-card').waitFor();
       await page.getByRole('button', { name: 'Back', exact: true }).click(); await checkWidth();
-      await page.goto(origin + '#explore?pack=angels-1'); await page.reload(); await action('deck-tokens').click(); await page.getByText('No related tokens or emblems are listed for this deck.').waitFor();
+      await page.goto(origin + '#explore?pack=angels-1'); await page.reload(); await click('deck-tokens'); await page.getByText('No related tokens or emblems are listed for this deck.').waitFor();
       assert.deepEqual(errors, []);
       console.log(`PASS ${width}px: reshuffle, remove, empty slots, per-slot shuffle, filters, URL reload, 13 hand samples/history, saved mix, token retry/cache/deduplication, pack tokens, empty tokens, overflow`);
       await context.close();
