@@ -30,7 +30,7 @@ const keys=scope=>scope.locator('[data-sample-key]').evaluateAll(els=>els.flatMa
    const curve=()=>page.locator('.deck-profile [data-mana-bucket]');
    const counts=()=>curve().evaluateAll(els=>els.map(el=>Number(el.dataset.count)));
    await page.goto(origin+'#explore?pack=legion-1');
-   await page.waitForFunction(()=>document.querySelector('.compact-curve')&&!document.querySelector('.curve-note')?.textContent.includes('unknown'));
+   await page.waitForFunction(()=>document.querySelector('.curve-trigger')&&!document.querySelector('.curve-trigger').getAttribute('aria-label').includes('unknown'));
    assert.deepEqual(await curve().evaluateAll(els=>els.map(el=>el.dataset.manaBucket)),['1','2','3','4','5+']);
    assert.deepEqual(await counts(),expected);
    // Filtering the visible card list must not change full-deck summaries.
@@ -63,9 +63,9 @@ const keys=scope=>scope.locator('[data-sample-key]').evaluateAll(els=>els.flatMa
    const omitted=deck.cards.find(c=>!c.isLand).name;
    await page.route('https://**/*',route=>mode==='partial'&&route.request().url().startsWith('https://api.scryfall.com/cards/search')?route.fulfill({json:{object:'list',data:fixtures.filter(c=>c.name!==omitted),has_more:false}}):route.abort());
    await page.goto(origin+'#explore?pack=legion-1');await page.locator('.deck-profile').waitFor();
-   if(mode==='partial')await page.waitForFunction(()=>document.querySelector('.curve-note')?.textContent.includes('1 with unknown'));
-   assert.match(await page.locator('.curve-note').innerText(),/unknown mana value/);
-   if(mode==='offline')assert.deepEqual(await page.locator('.curve-count').allTextContents(),Array(5).fill('—'));
+   if(mode==='partial')await page.waitForFunction(()=>document.querySelector('.curve-trigger')?.getAttribute('aria-label').includes('1 with unknown'));
+   assert.match(await page.locator('.curve-trigger').getAttribute('aria-label'),/unknown mana value/);
+   if(mode==='offline')assert.equal(await page.locator('.curve-fill.unknown').count(),5);
    await context.close();console.log(`PASS ${mode}: missing metadata stays explicit`);
   }
  }finally{await browser.close();}

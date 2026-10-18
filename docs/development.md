@@ -68,10 +68,19 @@ preference overrides it. Mobile pack and play-deck dialogs use the full viewport
 BREAD summaries below pack and play-deck totals count card copies in the full
 list, independent of filters. Each assigned BREAD role counts, so a card with
 multiple roles contributes to each total. Zero counts remain visible. Alongside
-BREAD, a compact nonland mana curve counts copies at mana values 1, 2, 3, 4,
-and 5+ (all values 5 and above). It uses the shared `deckAnalysis` calculation
-and the full list, independently of filters. Zero-mana copies and missing mana
-data are reported separately; an unavailable curve shows dashes, not zeroes.
+BREAD, a text-height sparkline counts nonland copies at mana values 1, 2, 3, 4,
+and 5+ (all values 5 and above). Only bars are visible; the full counts are in
+the accessible name and tooltip. The button retains a 44px touch target.
+It uses the shared `deckAnalysis` calculation and the full list independently
+of filters. Missing data uses hollow dashed bars, never invented zero counts.
+
+Clicking the sparkline opens a mana-curve dialog with horizontally scrollable
+columns and overlapping card artwork. Each exposed card strip is 58px tall
+and opens the usual card details. Duplicate names across both halves combine
+quantities. Zero-mana and unknown cards have separate columns when present;
+an entirely unknown deck opens directly to its Unknown column. The source
+deck IDs are explicit, so filters or a different mixing-room selection cannot
+change the list. Card inspection and Back preserve horizontal scroll and focus.
 
 At widths 320–600 CSS pixels, card grids and theme grids use two equal columns
 with shrinking tracks rather than a fixed minimum. Horizontal shelves retain
@@ -220,7 +229,10 @@ Scryfall data before publishing related changes.
 
 `tests/hand-layout.cjs` checks land stacking, mana ordering, sample preservation,
 full-list pack and combined-deck curves, unknown metadata, mobile widths, RTL,
-and 200% CSS zoom. Use `ATLAS_BROWSER=firefox` for a second browser.
+and 200% CSS zoom. `tests/mana-curve.cjs` covers the sparkline, full-list
+column counts, overlapping-card taps, keyboard/scroll/focus restoration,
+mobile fullscreen bounds, zero/unknown mana, and identical halves. Use
+`ATLAS_BROWSER=firefox` for a second browser.
 
 `tests/interface.cjs` covers keyboard drawer and popover behavior, filter focus,
 persisted display settings, empty searches, version tabs, CSV preview/apply/undo,
