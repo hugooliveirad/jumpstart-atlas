@@ -178,4 +178,6 @@ Scryfall data before publishing related changes.
 
 `tests/interface.cjs` covers keyboard drawer and popover behavior, filter focus,
 persisted display settings, empty searches, version tabs, CSV preview/apply/undo,
-saved-hand entry points and keyboard access to backup restore at the same widths.
+saved-hand entry points, persistent dialog disclosures, drawer resizing, and backup
+export/preview/cancel/restore/rejection at the same widths. Set `ATLAS_BROWSER=firefox`
+to run the interface suite in Firefox (install its Playwright browser first).

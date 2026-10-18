@@ -1,5 +1,6 @@
 // Run with NODE_PATH pointing to a Playwright installation; see docs/development.md.
-const { chromium } = require('playwright');
+const { chromium, firefox } = require('playwright');
+const browserType = process.env.ATLAS_BROWSER === 'firefox' ? firefox : chromium;
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -12,7 +13,7 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
   type_line: c.isLand ? 'Basic Land' : 'Creature', cmc: c.isLand ? 0 : 2, all_parts: [],
 }));
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await browserType.launch();
   try {
     for (const width of [320, 412, 1280]) {
       const context = await browser.newContext({ viewport: { width, height: 740 }, reducedMotion: 'reduce' });
@@ -51,6 +52,14 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
         await page.keyboard.press('Escape');
         if (await page.locator('.sidebar.open').count()) await page.keyboard.press('Escape');
         assert(await action('menu').evaluate(el => el === document.activeElement), 'Closing drawer returns focus to navigation trigger');
+        await action('menu').click();
+        for (const shortcut of await action('jump-color').all()) {
+          const box = await shortcut.boundingBox(); assert(box.width >= 44 && box.height >= 44, 'Mobile color shortcuts have 44px targets');
+        }
+        await page.setViewportSize({ width: 1280, height: 740 });
+        await page.waitForFunction(() => !document.querySelector('.workspace')?.inert && !document.body.classList.contains('modal-open'));
+        assert.equal(await page.locator('.sidebar[aria-modal="true"]').count(), 0, 'Desktop resize exits modal navigation');
+        await page.setViewportSize({ width, height: 740 }); await action('menu').focus();
         // Hidden navigation must not become a keyboard stop.
         await page.keyboard.press('Tab'); assert(!await page.evaluate(() => !!document.activeElement.closest('#atlas-sidebar')), 'Closed drawer has no keyboard stops');
       }
@@ -73,6 +82,7 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
       await page.locator('[popovertarget="popover-library-view"]:not([popovertargetaction="hide"])').click(); await checkPopoverWidth(viewMenu);
       const details = action('toggle-details', viewMenu);
       const initialDetails = await details.getAttribute('aria-pressed'); await details.click();
+      await page.waitForFunction(previous => { const button = document.querySelector('#popover-library-view [data-action="toggle-details"]'); return button && button.getAttribute('aria-pressed') !== previous; }, initialDetails);
       const changedDetails = await details.getAttribute('aria-pressed'); assert.notEqual(changedDetails, initialDetails, 'Details toggles');
       const shelfChoice = viewMenu.locator('[data-action="list-layout"][data-mode="shelves"]');
       await shelfChoice.click(); assert.equal(await shelfChoice.getAttribute('aria-pressed'), 'true');
@@ -106,7 +116,18 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
       await page.keyboard.press('ArrowLeft'); await page.keyboard.press('ArrowRight');
       assert.equal(await page.locator('[role=tab][aria-selected="true"]').getAttribute('data-id'), variantBeforeMenu, 'Popover arrows do not navigate the underlying pack dialog');
       assert(await page.locator('#popover-pack-view').evaluate(el => el.matches(':popover-open')), 'Popover remains open after arrow keys');
-      await dismiss(); await checkWidth('pack dialog'); await page.keyboard.press('Escape');
+      await dismiss(); await checkWidth('pack dialog');
+      await action('card', page.locator('.card-label')).first().click();
+      const membership = page.locator('[data-disclosure="card-memberships"]');
+      await membership.locator('summary').click();
+      await page.locator('#membership-filter').focus(); await page.locator('#membership-filter').selectOption('owned');
+      assert(await membership.evaluate(el => el.open), 'Card pack disclosure stays open after filtering');
+      assert(await page.locator('#membership-filter').evaluate(el => el === document.activeElement), 'Membership filter retains focus');
+      await page.locator('#membership-filter').selectOption('all');
+      await action('reveal-pack', membership).first().click();
+      await page.getByRole('button', { name: 'Back', exact: true }).click();
+      assert(await membership.evaluate(el => el.open), 'Nested Back restores disclosure state');
+      await page.keyboard.press('Escape'); await page.keyboard.press('Escape');
 
       // Apply the built-in sample only to this throwaway browser context, then undo.
       await go('collection'); const initial = await page.evaluate(key => localStorage.getItem(key), storageKey);
@@ -134,8 +155,34 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
       await menu(); await action('settings').click();
       const restore = page.getByRole('button', { name: 'Restore backup', exact: true }); await restore.focus();
       const chooser = page.waitForEvent('filechooser'); await page.keyboard.press('Enter'); await chooser;
+      const beforeRestore = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey);
+      const downloadEvent = page.waitForEvent('download'); await action('backup', page.locator('#modal-root')).click();
+      const download = await downloadEvent;
+      assert.match(download.suggestedFilename(), /\.json$/, 'Backup remains a JSON download');
+      const exported = JSON.parse(fs.readFileSync(await download.path(), 'utf8'));
+      assert.deepEqual(exported, beforeRestore, 'Export contains the whole current collection');
+      assert(exported.saved.some(recipe => recipe.name === 'Interface regression mix'), 'Backup includes the saved recipe');
+      const packInventory = Object.fromEntries(catalog.decks.find(deck => deck.id === 'angels-1').cards.map(card => [card.name.toLowerCase(), card.quantity]));
+      const replacement = { ...exported, inventory: { ...packInventory, plains: 17 }, allocations: { 'angels-1': 1 }, favorites: ['angels'] };
+      const restoreFixture = { name: 'restore-test.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(replacement)) };
+      await page.locator('#restore-file').setInputFiles(restoreFixture);
+      await action('commit-restore').waitFor();
+      assert.deepEqual(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey), beforeRestore, 'Restore preview does not change stored data');
+      await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+      assert.deepEqual(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey), beforeRestore, 'Cancel preserves the collection');
+      await menu(); await action('settings', page.locator('#atlas-sidebar')).click();
+      await page.locator('#restore-file').setInputFiles(restoreFixture); await action('commit-restore').click();
+      await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).inventory.plains === 17, storageKey);
+      const restored = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey);
+      assert.deepEqual(restored.inventory, replacement.inventory, 'Confirmed restore replaces inventory');
+      for (const field of ['saved', 'allocations', 'favorites', 'settings']) assert.deepEqual(restored[field], replacement[field], `Restore preserves ${field}`);
+      await menu(); await action('settings', page.locator('#atlas-sidebar')).click();
+      await page.locator('#restore-file').setInputFiles({ name: 'invalid-backup.json', mimeType: 'application/json', buffer: Buffer.from('{broken JSON') });
+      await page.getByRole('alert').filter({ hasText: 'Backup not restored' }).waitFor();
+      assert.equal(await action('commit-restore').count(), 0, 'Malformed backup cannot be confirmed');
+      assert.deepEqual(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey), restored, 'Malformed backup preserves the full collection');
       assert.deepEqual(errors, [], 'No application exceptions');
-      console.log(`PASS ${width}px: mobile navigation, keyboard popovers, filter focus, display persistence, empty search, variant tabs, import preview/apply/undo, saved hands, keyboard restore, overflow`);
+      console.log(`PASS ${width}px: mobile navigation, keyboard popovers, filter focus, display persistence, empty search, variant tabs, import preview/apply/undo, saved hands, keyboard restore, backup export/preview/cancel/restore/rejection, overflow`);
       await context.close();
     }
   } finally { await browser.close(); }
