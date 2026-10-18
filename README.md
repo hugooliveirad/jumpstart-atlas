@@ -19,7 +19,7 @@ You can:
 - Sample opening hands and the next three draws for any mix, with previous samples to compare
 - View related tokens and emblems from pack and play-deck dialogs
 - Choose a compact view or turn on more details, with contextual Filters, View and More menus
-- Copy Scryfall decklists (quantity, name, set, collector number) from pack, card, and pairing lists
+- Copy LigaMagic-compatible lists (quantity and English card name) from pack, card, and pairing lists
 - Open card details for J25 printings, Scryfall, and [LigaMagic](https://www.ligamagic.com.br/) links
 
 ## Run it locally

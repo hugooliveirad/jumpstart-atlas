@@ -15,5 +15,5 @@ Read `docs/development.md` before editing catalog shape, theme tags, pack rarity
 - Inventory is English-name keyed, not printing keyed. Do not silently bump `APP_SCHEMA`.
 - Theme rarity is Common / Rare / Mythic from variant counts 4 / 2 / 1.
 - Filters use catalog theme tags. Do not restore editorial pack-type buckets.
-- Card and pack lists copy a Scryfall decklist. JSON backup and import-issue downloads stay as downloads.
+- Card and pack lists copy LigaMagic text: `quantity English card name`, one line per name, without printing suffixes. JSON backup and import-issue downloads stay as downloads.
 - Mixing-room ranking is shared-tag synergy, not a published winrate table.

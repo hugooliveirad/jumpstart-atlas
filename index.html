@@ -1485,21 +1485,15 @@ function analyzeCSV(parsed, index, options={}) {
   return {inventory, issues, acceptedRows, skippedRows, total:sumValues(inventory), distinct:Object.keys(inventory).length, mapping, groupMatches};
 }
 function csvCell(value){let s=String(value??'');if(/^[=+@\t\r-]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
-function scryfallLine(card,quantity){
-  const name=card?.name||'Unknown';
-  const printing=card?._printing||card?.printings?.[0];
-  const set=(printing?.set||'j25').toUpperCase();
-  const number=printing?.collector_number||card?.number;
-  return number?`${quantity} ${name} (${set}) ${number}`:`${quantity} ${name}`;
-}
-function scryfallList(counts){
+function ligaMagicLine(card,quantity){return `${quantity} ${card.name}`;}
+function ligaMagicList(counts){
   return Object.entries(counts).filter(([,q])=>q>0).sort(([a],[b])=>{
     const na=idx.cards.get(a)?.name||a, nb=idx.cards.get(b)?.name||b;
     return na.localeCompare(nb);
-  }).map(([key,q])=>scryfallLine(idx.cards.get(key)||{name:key,printings:[]},q)).join('\n');
+  }).map(([key,q])=>ligaMagicLine(idx.cards.get(key)||{name:key,printings:[]},q)).join('\n');
 }
 function deckText(decks) {
-  return scryfallList(requirements(decks,true));
+  return ligaMagicList(requirements(decks,true));
 }
 function copyListButton(action,label='Copy list',id=''){
   return `<button class="btn btn-secondary btn-small" data-action="${action}" ${id?`data-id="${e(id)}"`:''}>${icon('copy')}${e(label)}</button>`;
@@ -1986,7 +1980,8 @@ function downloadText(name,text,type='text/plain;charset=utf-8'){
   const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function fileSlug(text){return normalizeName(text).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
-async function copyText(text){try{await navigator.clipboard.writeText(text);toast('Copied to clipboard.');}catch{const area=document.createElement('textarea');area.value=text;area.style.cssText='position:fixed;opacity:0';document.body.appendChild(area);area.select();let ok=false;try{ok=document.execCommand('copy');}catch{}area.remove();if(ok)toast('Copied to clipboard.');else{downloadText('jumpstart-atlas-list.txt',text);toast('Clipboard unavailable. Downloaded the list instead.',true);}}}
+async function copyCardList(text){return copyText(text,'Copied for LigaMagic.');}
+async function copyText(text,message='Copied to clipboard.'){try{await navigator.clipboard.writeText(text);toast(message);}catch{const area=document.createElement('textarea');area.value=text;area.style.cssText='position:fixed;opacity:0';document.body.appendChild(area);area.select();let ok=false;try{ok=document.execCommand('copy');}catch{}area.remove();if(ok)toast(message);else{downloadText('jumpstart-atlas-list.txt',text);toast('Clipboard unavailable. Downloaded the list instead.',true);}}}
 function footerHTML(){const label=ui.connection==='loading'?`Loading Scryfall${ui.cardCount?' · '+ui.cardCount+' printings':''}…`:ui.connection==='online'?'Scryfall connected':ui.connection==='cached'?'Card data cached':ui.connection==='bundled'?'Bundled card data':ui.connection==='partial'?'Partial card data loaded':'Decklists available offline';return `<footer class="site-footer"><span>Made for the joy of mixing things up. <button class="text-button" data-action="about">Unofficial fan project ${icon('external')}</button></span><span class="status-line"><i class="live-dot" style="${ui.connection==='offline'?'background:#a791be':''}"></i>${e(label)}${['offline','partial'].includes(ui.connection)?'<button class="text-button" data-action="sync">Retry</button>':''}</span></footer>`;}
 function navHTML(){
   const items=[['explore','compass','Explore themes','46'],['cards','cards','Card library',String(idx.cards.size)],['collection','collection','My collection',derived.owned||''],['pairings','shuffle','The mixing room',''],['saved','bookmark','Saved play decks',collection.saved.length||'']];
@@ -2517,8 +2512,8 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'open-play-deck':showPlayDeck(button.dataset.pair.split(','),id||null,button);break;
  case'use-dialog-deck':if(ui.modal?.kind==='play-deck'){ui.pair=[...ui.modal.pair];ui.showPairList=true;navigate('pairings');}break;
  case'save-dialog-deck':if(ui.modal?.kind==='play-deck'){const m=ui.modal;showModal('save',{pair:[...m.pair],...(m.id?{id:m.id}:{})},true);}break;
- case'copy-dialog-deck':if(ui.modal?.kind==='play-deck')await copyText(deckText(ui.modal.pair.map(id=>idx.decks.get(id))));break;
- case'copy-dialog-missing':if(ui.modal?.kind==='play-deck'){const cov=coverageForPair(ui.modal.pair);if(!cov.missingCount){toast('No required copies are missing.');break;}await copyText(scryfallList(Object.fromEntries(cov.missing.map(m=>[m.key,m.quantity]))));}break;
+ case'copy-dialog-deck':if(ui.modal?.kind==='play-deck')await copyCardList(deckText(ui.modal.pair.map(id=>idx.decks.get(id))));break;
+ case'copy-dialog-missing':if(ui.modal?.kind==='play-deck'){const cov=coverageForPair(ui.modal.pair);if(!cov.missingCount){toast('No required copies are missing.');break;}await copyCardList(ligaMagicList(Object.fromEntries(cov.missing.map(m=>[m.key,m.quantity]))));}break;
  case'color':{const c=button.dataset.color;ui.colors=c?ui.colors.includes(c)?ui.colors.filter(v=>v!==c):[...ui.colors,c]:[];render();break;}
  case'jump-color':ui.colors=[];ui.packFilter='all';ui.packType='';ui.themeQuery='';navigate('explore');requestAnimationFrame(()=>document.getElementById('lane-'+button.dataset.color)?.scrollIntoView({behavior:'smooth'}));break;
  case'zoom':ui.zoom=Math.max(.8,Math.min(1.4,Math.round((ui.zoom+Number(button.dataset.delta))*10)/10));render();break;
@@ -2548,8 +2543,8 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'add-pack':case'confirm-pack':showModal(a,{id},!!ui.modal);break;
  case'commit-pack':commitPack(id,button.dataset.mode);break;
  case'unconfirm-pack':{const next=structuredClone(collection);if(next.allocations[id]>0){next.allocations[id]--;if(!next.allocations[id])delete next.allocations[id];saveCollection(next,'One pack unconfirmed. Its card copies remain in your inventory.');}break;}
- case'copy-pack':if(idx.decks.has(id))await copyText(deckText([idx.decks.get(id)]));break;
- case'copy-missing-pack':{const cov=packAvailability(id);if(!cov.missingCount){toast('No required copies are missing.');break;}await copyText(scryfallList(Object.fromEntries(cov.missing.map(m=>[m.key,m.quantity]))));break;}
+ case'copy-pack':if(idx.decks.has(id))await copyCardList(deckText([idx.decks.get(id)]));break;
+ case'copy-missing-pack':{const cov=packAvailability(id);if(!cov.missingCount){toast('No required copies are missing.');break;}await copyCardList(ligaMagicList(Object.fromEntries(cov.missing.map(m=>[m.key,m.quantity]))));break;}
  case'quantity':{if(!idx.cards.has(key))break;const next=structuredClone(collection),n=(next.inventory[key]||0)+Number(button.dataset.delta);if(n<(derived.reserved[key]||0)||n<0||n>MAX_QUANTITY){toast('Release confirmed packs before removing their reserved copies.',true);break;}if(n)next.inventory[key]=n;else delete next.inventory[key];saveCollection(next);break;}
  case'query':ui.search=button.dataset.query;ui.cardPage=1;updateURL(true);scheduleLibrarySearch();render();break;
  case'modal-query':ui.search=button.dataset.query;ui.cardPage=1;navigate('cards');scheduleLibrarySearch();break;
@@ -2567,13 +2562,13 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'suggest':showModal('suggest',{result:suggestAllocation(CATALOG.decks,derived.remaining,idx,collection.settings.includeBasics)});break;
  case'commit-suggestion':{const next=structuredClone(collection);for(const[id,n]of Object.entries(ui.modal?.result?.suggested||{}))next.allocations[id]=(next.allocations[id]||0)+n;if(saveCollection(next,'Suggested packs confirmed. Shared copies were allocated once.'))closeModal(true);break;}
  case'undo-import':if(ui.undo){const previous=ui.undo;if(saveCollection(previous,'Last import undone.')){ui.undo=null;render();}}break;
- case'copy-inventory':await copyText(scryfallList(collection.inventory));break;
- case'copy-inventory-view':{const counts=Object.create(null);for(const c of filteredInventory())counts[c.key]=collection.inventory[c.key]||0;await copyText(scryfallList(counts)||'');break;}
- case'copy-library':await copyText(filteredCards().map(c=>scryfallLine(c,collection.inventory[c.key]||1)).join('\n'));break;
- case'copy-confirmed':{const decks=filteredConfirmed().flatMap(([id,q])=>Array.from({length:q},()=>idx.decks.get(id)));await copyText(deckText(decks));break;}
- case'copy-matches':{const decks=filteredCandidates().slice(0,ui.matchLimit).map(m=>m.deck);await copyText(deckText(decks));break;}
- case'copy-visible-pairs':{const pairs=filteredPairs();const page=pairs.slice((ui.pairPage-1)*30,ui.pairPage*30);const decks=page.flatMap(p=>p.map(id=>idx.decks.get(id)));await copyText(deckText(decks));break;}
- case'copy-pair-id':{const pair=(button.dataset.pair||'').split(',');if(pair.length===2)await copyText(deckText(pair.map(id=>idx.decks.get(id))));break;}
+ case'copy-inventory':await copyCardList(ligaMagicList(collection.inventory));break;
+ case'copy-inventory-view':{const counts=Object.create(null);for(const c of filteredInventory())counts[c.key]=collection.inventory[c.key]||0;await copyCardList(ligaMagicList(counts)||'');break;}
+ case'copy-library':{const counts=Object.create(null);for(const c of filteredCards())counts[c.key]=collection.inventory[c.key]||1;await copyCardList(ligaMagicList(counts));break;}
+ case'copy-confirmed':{const decks=filteredConfirmed().flatMap(([id,q])=>Array.from({length:q},()=>idx.decks.get(id)));await copyCardList(deckText(decks));break;}
+ case'copy-matches':{const decks=filteredCandidates().slice(0,ui.matchLimit).map(m=>m.deck);await copyCardList(deckText(decks));break;}
+ case'copy-visible-pairs':{const pairs=filteredPairs();const page=pairs.slice((ui.pairPage-1)*30,ui.pairPage*30);const decks=page.flatMap(p=>p.map(id=>idx.decks.get(id)));await copyCardList(deckText(decks));break;}
+ case'copy-pair-id':{const pair=(button.dataset.pair||'').split(',');if(pair.length===2)await copyCardList(deckText(pair.map(id=>idx.decks.get(id))));break;}
  case'preview-print':togglePrintPreview(button,event);break;
  case'backup':backupExport();break;
  case'restore-backup':document.getElementById('restore-file')?.click();break;
@@ -2591,8 +2586,8 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'reset-saved-filters':ui.savedQuery='';ui.savedType='';ui.savedFilter='all';render();break;
  case'reset-pair-filters':ui.pairQuery='';ui.pairColor='all';ui.pairType='';ui.pairAvailability='all';ui.includeIdentical=true;ui.pairPage=1;render();break;
  case'save-pair':if(completePair(ui.pair))showModal('save',{pair:[...ui.pair]});break;
- case'copy-pair':if(completePair(ui.pair))await copyText(deckText(ui.pair.map(id=>idx.decks.get(id))));break;
- case'copy-missing-pair':{const cov=coverageForPair(ui.pair);if(!cov.missingCount){toast('No required copies are missing.');break;}await copyText(scryfallList(Object.fromEntries(cov.missing.map(m=>[m.key,m.quantity]))));break;}
+ case'copy-pair':if(completePair(ui.pair))await copyCardList(deckText(ui.pair.map(id=>idx.decks.get(id))));break;
+ case'copy-missing-pair':{const cov=coverageForPair(ui.pair);if(!cov.missingCount){toast('No required copies are missing.');break;}await copyCardList(ligaMagicList(Object.fromEntries(cov.missing.map(m=>[m.key,m.quantity]))));break;}
  case'share-pair':{const hash='#pairings?packs='+ui.pair.join(',');if(location.protocol==='file:'){await copyText(hash);toast('Pairing fragment copied. Append it to a hosted atlas URL to share; local file paths are not shared.');}else await copyText(location.href.split('#')[0]+hash);break;}
  case'load-saved':{const s=collection.saved.find(s=>s.id===id);if(s)showPlayDeck(s.pair,s.id,button);break;}
  case'edit-saved':showModal('save',{id});break;
@@ -2600,8 +2595,8 @@ async function handleAction(button,event){const a=button.dataset.action,id=butto
  case'favorite-saved':{const next=structuredClone(collection);const s=next.saved.find(s=>s.id===id);if(s){s.favorite=!s.favorite;saveCollection(next);}break;}
  case'delete-saved':showModal('delete-saved',{id});break;
  case'commit-delete':{const next=structuredClone(collection);next.saved=next.saved.filter(s=>s.id!==id);if(saveCollection(next,'Saved recipe deleted.'))closeModal(true);break;}
- case'copy-saved':{const s=collection.saved.find(s=>s.id===id);if(s)await copyText(deckText(s.pair.map(id=>idx.decks.get(id))));break;}
- case'copy-saved-page':{const decks=filteredSaved().flatMap(s=>s.pair.map(id=>idx.decks.get(id)));await copyText(deckText(decks));break;}
+ case'copy-saved':{const s=collection.saved.find(s=>s.id===id);if(s)await copyCardList(deckText(s.pair.map(id=>idx.decks.get(id))));break;}
+ case'copy-saved-page':{const decks=filteredSaved().flatMap(s=>s.pair.map(id=>idx.decks.get(id)));await copyCardList(deckText(decks));break;}
  case'csv-template':downloadText('jumpstart-collection-template.csv','Name,Quantity,Set,Pack\r\n"Giada, Font of Hope",1,J25,\r\nPlains,7,J25,','text/csv');break;
  case'sample-import':ui.import={fileName:'example-collection.csv',parsed:parseCSV(sampleCSV()),mode:'replace',j25Only:false,confirmGroups:false,skipIssues:false,demo:true};ui.import.mapping=inferColumns(ui.import.parsed.headers);recalculateImport();break;
  case'restart-import':ui.import={mode:'replace',j25Only:false,confirmGroups:false,skipIssues:false};renderModal();break;

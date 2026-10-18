@@ -136,7 +136,20 @@ catalog or inventory. The viewer deduplicates by token Oracle ID and lists sourc
 cards. Missing metadata, request failures, and a verified empty token list have
 separate states. Copy effects can produce tokens without a listed token card.
 
-`scryfallLine` / `scryfallList` / `deckText` produce `quantity Name (SET) number` lists. Copy buttons call `copyText`. `downloadText` remains for JSON backup, CSV import template, import issues, and unreadable-recovery dumps.
+`ligaMagicLine` / `ligaMagicList` / `deckText` produce LigaMagic plain-text lists:
+`quantity English card name`, one entry per name, without set codes, collector
+numbers, headings or annotations. Deck quantities include lands and both halves;
+missing lists retain their shortage quantities. Library results collapse alternate
+printings into one name, using the owned quantity or one when unowned.
+`copyCardList` confirms the LigaMagic format; share links still use `copyText`.
+`downloadText` remains for JSON backup, CSV import template, import issues, and
+unreadable-recovery dumps.
+
+Checked against LigaMagic's [plain-text export](https://www.ligamagic.com.br/?view=dks/exportar&type=4&id=10260495)
+and its [deck editor parser](https://www.lmcorp.com.br/arquivos/js/decks-v75-min.js)
+on October 18, 2026. The format is independent of Scryfall hydration and printing
+selection. Deck-format legality and account-based saving remain LigaMagic's own
+validation; a 20-card pack is an importable list, not a complete constructed deck.
 
 ## Interface structure
 
@@ -202,3 +215,9 @@ persisted display settings, empty searches, version tabs, CSV preview/apply/undo
 saved-hand entry points, persistent dialog disclosures, drawer resizing, and backup
 export/preview/cancel/restore/rejection at the same widths. Set `ATLAS_BROWSER=firefox`
 to run the interface suite in Firefox (install its Playwright browser first).
+
+`tests/copy-ligamagic.cjs` checks every catalog name and exercises Copy for packs,
+identical-half mixes, saved decks, missing cards, inventory and the library in
+hydrated desktop and offline mobile contexts. It verifies quantity aggregation,
+printing deduplication, and that share links remain URLs. Run with the same
+`NODE_PATH` and optional `ATLAS_URL` as the other browser tests.

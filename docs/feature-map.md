@@ -281,3 +281,5 @@ See [development.md](development.md) for interaction behavior and runnable local
 checks, and [interface-design.md](interface-design.md) for measured layout/contrast
 evidence. The proposals above are the original audit, not additional promises or
 claims of automated coverage for every edge case.
+
+Copy-format update: list copying now uses LigaMagic plain text (`quantity English card name`), replacing the Scryfall-format baseline recorded above. See [development.md](development.md#pairing-and-copy) for aggregation and source verification.
