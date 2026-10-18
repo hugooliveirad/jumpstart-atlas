@@ -143,11 +143,13 @@ selected physical copy's draw index. Draw a card consumes the next copy without
 reshuffling; it stops at 40. History retains each sample's progress and selection.
 No collection or preference storage changes.
 
-`handRows` creates stable batches of seven. Each batch displays lands first, then
-nonlands by ascending mana value (name breaks ties; unknown mana sorts last).
-It never sorts the underlying library or moves cards between completed rows.
-The fan overlaps lands more tightly than spells and scrolls horizontally when
-needed. First activation brings a card forward and expands its space; activating
+`handRows` preserves exact draw order in stable batches of seven, including lands.
+Each batch fits into one or more visual rows: spacing tightens before wrapping,
+with tighter overlap after lands. A ResizeObserver refits rows when space changes.
+Selected cards reserve their full width, and rotation has room at both edges.
+Hand rows never scroll horizontally, including the next-three preview.
+Layout never mutates the library or moves cards between completed batches.
+First activation brings a card forward and expands its space; activating
 that same physical copy again opens details. Enter/Space follow the same rule.
 Back restores the selected copy, keyboard focus, and scroll. Selection updates
 in place; draws retain existing artwork nodes to avoid flashes. The optional
@@ -237,7 +239,7 @@ and history, saved recipes, token retry/cache/deduplication, and overflow at 128
 Scryfall data before publishing related changes.
 
 `tests/hand-layout.cjs` checks two-stage fan selection, all 40 draws against the
-exact deck multiset, preview consumption, stable seven-card rows, mana ordering,
+exact deck multiset, preview consumption, stable seven-card batches, draw ordering, adaptive rows without horizontal overflow,
 independent duplicate copies, retained artwork, sample history, keyboard and
 focus return, offline drawing, mobile widths, RTL and 200% CSS zoom. `tests/mana-curve.cjs` covers the sparkline, full-list
 column counts, overlapping-card taps, keyboard/scroll/focus restoration,
