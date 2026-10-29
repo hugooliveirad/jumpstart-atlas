@@ -248,6 +248,8 @@ mobile fullscreen bounds, zero/unknown mana, and identical halves. Use
 `ATLAS_BROWSER=firefox` for a second browser.
 
 `tests/interface.cjs` covers keyboard drawer and popover behavior, filter focus,
+slow typing and caret retention in all 19 text/numeric editors, composition commits,
+stale search responses, clearing in-flight searches, background hydration while editing,
 persisted display settings, empty searches, version tabs, CSV preview/apply/undo,
 saved-hand entry points, persistent dialog disclosures, drawer resizing, and backup
 export/preview/cancel/restore/rejection at the same widths. Set `ATLAS_BROWSER=firefox`
