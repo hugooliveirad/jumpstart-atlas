@@ -12,6 +12,110 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
   id: `interface-${i}`, name: c.name, set: 'j25', collector_number: String(i + 1),
   type_line: c.isLand ? 'Basic Land' : 'Creature', cmc: c.isLand ? 0 : 2, all_parts: [],
 }));
+async function checkTyping(page, go, click, action) {
+  const type = async (id, value = 'ang') => {
+    const field = page.locator('#' + id);
+    await field.focus();
+    const original = await field.elementHandle();
+    await page.keyboard.type(value, { delay: 180 });
+    await page.waitForTimeout(400);
+    assert(await original.evaluate(el => el.isConnected && el === document.activeElement), `${id}: typing must keep the original input focused`);
+    assert.equal(await field.inputValue(), value, `${id}: every character survives result updates`);
+    if (await field.getAttribute('type') !== 'number') {
+      await page.keyboard.press('ArrowLeft'); await page.keyboard.type('X');
+      await page.waitForTimeout(400);
+      assert.equal(await field.inputValue(), value.slice(0, -1) + 'X' + value.slice(-1), `${id}: insertion keeps the caret position`);
+    }
+    await original.dispose();
+  };
+  for (const [view, id] of [['explore', 'theme-search'], ['cards', 'card-search'], ['pairings', 'pair-search'], ['saved', 'saved-search'], ['collection', 'inventory-search']]) {
+    await go(view); await page.waitForTimeout(400);
+    if (view === 'saved') assert.equal(await page.locator('.page-heading p').textContent(), '0 saved recipes', 'Saved count renders as plain text');
+    if (view === 'collection') await action('collection-tab').filter({ hasText: 'Cards' }).click();
+    await type(id);
+  }
+  await go('cards'); await page.waitForTimeout(400);
+  const search = page.locator('#card-search');
+  await search.focus();
+  const editor = await search.elementHandle();
+  await search.evaluate(el => {
+    el.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }));
+    el.value = 'ang';
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, isComposing: true, data: 'ang' }));
+  });
+  await page.waitForTimeout(400);
+  assert(!new URL(await page.url()).hash.includes('q='), 'Uncommitted composition does not start a search');
+  assert(await editor.evaluate(el => el.isConnected && el === document.activeElement), 'Composition keeps the editor connected');
+  await search.evaluate(el => el.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: 'ang' })));
+  await page.waitForTimeout(400);
+  assert(new URL(await page.url()).hash.includes('q=ang'), 'Composition commit updates the search');
+  assert(await editor.evaluate(el => el.isConnected && el === document.activeElement), 'Composition commit retains the editor');
+  await editor.dispose(); await search.fill(''); await page.waitForTimeout(400);
+  await page.locator('[popovertarget="popover-library-query"]:not([popovertargetaction="hide"])').click();
+  for (const id of ['adv-name', 'adv-oracle', 'adv-type', 'adv-mana', 'adv-artist', 'adv-flavor', 'adv-lore', 'adv-criteria', 'adv-set', 'adv-stat-val', 'adv-price-val']) {
+    await type(id, id.endsWith('-val') ? '12' : 'ang');
+    await page.locator('#' + id).fill('');
+  }
+  await go('pairings?packs=angels-1,angels-2'); await page.waitForTimeout(400);
+  await action('choose-slot').first().click(); await type('picker-search');
+  await page.keyboard.press('Escape'); await click(action('save-pair'));
+  await page.locator('#saved-name').fill(''); await type('saved-name'); await type('saved-notes');
+  await page.keyboard.press('Escape');
+}
+async function checkAsyncTyping(page, go, action) {
+  await go('cards'); await page.waitForTimeout(400);
+  let release;
+  const pending = new Promise(resolve => { release = resolve; });
+  const remoteSearch = url => url.searchParams.get('unique') === 'cards';
+  await page.route(remoteSearch, route => { release(route); });
+  await page.locator('#card-search').fill('dragon');
+  const oldResponse = await pending;
+  await page.locator('#card-search').fill('theme:angels');
+  await oldResponse.fulfill({ json: { data: [], has_more: false } });
+  await page.waitForTimeout(450);
+  assert(await page.locator('[data-card-context="library"] [data-action="card"]').count() > 0, 'An older response cannot erase the newest local results');
+  await page.unroute(remoteSearch);
+
+  const pendingClear = new Promise(resolve => { release = resolve; });
+  await page.route(remoteSearch, route => { release(route); });
+  await page.locator('#card-search').fill('dragon');
+  const clearedResponse = await pendingClear;
+  await action('clear-card-search').click();
+  await clearedResponse.fulfill({ json: { data: [], has_more: false } });
+  await page.waitForTimeout(400);
+  assert(await page.locator('[data-card-context="library"] [data-action="card"]').count() > 0, 'Clear search invalidates an in-flight response');
+  await page.unroute(remoteSearch);
+
+  const pendingModal = new Promise(resolve => { release = resolve; });
+  await page.route(remoteSearch, route => { release(route); });
+  await page.locator('#card-search').fill('dragon');
+  const modalResponse = await pendingModal;
+  await page.locator('[data-card-context="library"] [data-action="card"]').first().click();
+  const dialog = await page.getByRole('dialog').elementHandle();
+  await modalResponse.fulfill({ json: { data: [], has_more: false } });
+  await page.waitForTimeout(400);
+  assert(await dialog.evaluate(el => el.isConnected), 'Remote results do not rebuild the open card dialog');
+  await page.keyboard.press('Escape');
+  await page.getByText('No cards found.', { exact: true }).waitFor();
+  assert.equal(await page.getByText('Searching Scryfall…', { exact: true }).count(), 0, 'Remote completion behind a dialog updates the library');
+  await dialog.dispose(); await page.unroute(remoteSearch);
+  await action('clear-card-search').click();
+
+  const hydration = url => url.searchParams.get('unique') === 'prints';
+  const pendingHydration = new Promise(resolve => { release = resolve; });
+  await page.route(hydration, route => { release(route); });
+  await action('settings').dispatchEvent('click'); await action('sync').click();
+  const syncResponse = await pendingHydration;
+  await page.keyboard.press('Escape');
+  const search = page.locator('#card-search'); await search.focus();
+  const editor = await search.elementHandle();
+  await syncResponse.fulfill({ json: { data: cards, total_cards: cards.length, has_more: false } });
+  await page.waitForTimeout(400);
+  assert(await editor.evaluate(el => el.isConnected && el === document.activeElement), 'Background hydration retains the focused editor');
+  await page.keyboard.type('ang'); await page.waitForTimeout(400);
+  assert.equal(await search.inputValue(), 'ang', 'Typing continues after hydration');
+  await editor.dispose(); await page.unroute(hydration);
+}
 (async () => {
   const browser = await browserType.launch();
   try {
@@ -41,6 +145,8 @@ const cards = [...new Map(catalog.decks.flatMap(d => d.cards).map(c => [c.name, 
       };
       const dismiss = async () => { if (await page.locator('[popover]:popover-open').count()) await page.keyboard.press('Escape'); };
       const menu = async () => { if (width < 900) await action('menu').click(); };
+      await checkTyping(page, go, click, action);
+      await checkAsyncTyping(page, go, action);
       for (const view of ['explore', 'cards', 'collection', 'pairings', 'saved']) { await go(view); await checkWidth(view); }
 
       await go('explore');
